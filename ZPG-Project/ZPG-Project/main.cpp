@@ -1,4 +1,6 @@
-﻿//Include GLFW  
+﻿//Include GLEW
+#include <GL/glew.h>
+//Include GLFW  
 #include <GLFW/glfw3.h>  
 
 //Include GLM  
@@ -38,51 +40,57 @@ static void button_callback(GLFWwindow* window, int button, int action, int mode
 	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
 }
 
+float points[] = {
+	1.f, 0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+   -1.f, 0.f, 0.0f
+};
+
+float squarePoints[] = {
+	-0.5f, 0.5f, 0.0f,
+	0.5f, 0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f,
+	-0.5f, 0.5f, 0.0f,
+};
 
 
-//GLM test
+const char* vertex_shader =
+"#version 330\n"
+"layout(location=0) in vec3 vp;"
+"void main () {"
+"     gl_Position = vec4 (vp, 1.0);"
+"}";
 
-// Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-glm::mat4 Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.01f, 100.0f);
-
-// Camera matrix
-glm::mat4 View = glm::lookAt(
-	glm::vec3(10, 10, 10), // Camera is at (4,3,-3), in World Space
-	glm::vec3(0, 0, 0), // and looks at the origin
-	glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-);
-// Model matrix : an identity matrix (model will be at the origin)
-glm::mat4 Model = glm::mat4(1.0f);
-
+const char* fragment_shader =
+"#version 330\n"
+"out vec4 fragColor;"
+"void main () {"
+"     fragColor = vec4 (0.4, 0.8, 1.0, 1.0);"
+"}";
 
 int main(void)
 {
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
-
-	if (!glfwInit())
+	if (!glfwInit()) {
+		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		exit(EXIT_FAILURE);
-	window = glfwCreateWindow(1600, 900, "ZPG", NULL, NULL);
-	if (!window)
-	{
+	}
+
+	window = glfwCreateWindow(800, 600, "ZPG", NULL, NULL);
+	if (!window) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
-	// Sets the key callback
-	glfwSetKeyCallback(window, key_callback);
-
-	glfwSetCursorPosCallback(window, cursor_callback);
-
-	glfwSetMouseButtonCallback(window, button_callback);
-
-	glfwSetWindowFocusCallback(window, window_focus_callback);
-
-	glfwSetWindowIconifyCallback(window, window_iconify_callback);
-
-	glfwSetWindowSizeCallback(window, window_size_callback);
+	// start GLEW extension handler
+	glewExperimental = GL_TRUE;
+	glewInit();
 
 
 	int width, height;
@@ -90,35 +98,74 @@ int main(void)
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 
+	//vertex buffer object (VBO)
+	GLuint VBO = 0;
+	glGenBuffers(1, &VBO); // generate the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(squarePoints), squarePoints, GL_STATIC_DRAW);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+	//Vertex Array Object (VAO)
+	GLuint VAO = 0;
+	glGenVertexArrays(1, &VAO); //generate the VAO
+	glBindVertexArray(VAO); //bind the VAO
+	glEnableVertexAttribArray(0); //enable vertex attributes
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//index, pocet, typ, normalized, velikost jednoho vrcholu, pocatek
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+
+	//create and compile shaders
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertex_shader, NULL);
+	glCompileShader(vertexShader);
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
+	glCompileShader(fragmentShader);
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, fragmentShader);
+	glAttachShader(shaderProgram, vertexShader);
+	glLinkProgram(shaderProgram);
 
 
-	while (!glfwWindowShouldClose(window))
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
+	while (!glfwWindowShouldClose(window)) {
+		// clear color and depth buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		glUseProgram(shaderProgram);
+		
+		glBindVertexArray(VAO);
+		// draw triangles
+		glDrawArrays(GL_TRIANGLES, 0, 6); //mode,first,count
 
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glRotatef((float)glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-
-		glBegin(GL_POLYGON);
-		glColor3f(1.f, 0.f, 0.f);
-		glVertex3f(-0.5f, -0.5f, 0.f);
-		glColor3f(0.f, 1.f, 0.f);
-		glVertex3f(0.5f, -0.5f, 0.f);
-		glColor3f(1.f, 1.f, 0.f);
-		glVertex3f(0.5f, 0.5f, 0.f);
-		glColor3f(0.f, 0.f, 1.f);
-		glVertex3f(-0.5f, 0.5f, 0.f);
-		glEnd();
-		glfwSwapBuffers(window);
-
+		// update other events like input handling
 		glfwPollEvents();
+		// put the stuff we’ve been drawing onto the display
+		glfwSwapBuffers(window);
 	}
+
 	glfwDestroyWindow(window);
+
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
+
+	GLint status;
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+	{
+		GLint infoLogLength;
+		glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+		GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+		glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, strInfoLog);
+		fprintf(stderr, "Linker failure: %s\n", strInfoLog);
+		delete[] strInfoLog;
+	}
+
+	/*
+	Application* app = new Application();
+	app->initialization(); //OpenGL inicialization
+
+	//Loading scene
+	app->createShaders();
+	app->createModels();
+	app->run(); //Rendering 
+	*/
 }
