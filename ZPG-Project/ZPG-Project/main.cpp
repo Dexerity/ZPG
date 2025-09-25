@@ -41,9 +41,9 @@ static void button_callback(GLFWwindow* window, int button, int action, int mode
 }
 
 float points[] = {
-	1.f, 0.5f, 0.0f,
-	0.5f, -0.5f, 0.0f,
-   -1.f, 0.f, 0.0f
+	1.f, 0.5f, 0.0f, 1.f, 0.f, 0.f,
+	0.5f, -0.5f, 0.0f, 1.f, 0.f, 0.f,
+   -1.f, 0.f, 0.0f, 1.f, 0.f, 0.f
 };
 
 float squarePoints[] = {
@@ -63,12 +63,29 @@ const char* vertex_shader =
 "     gl_Position = vec4 (vp, 1.0);"
 "}";
 
+const char* vertex_shader2 =
+"#version 330\n"
+"layout(location=0) in vec3 vp;"
+"layout(location=1) in vec3 vc;"
+"void main () {"
+"	  color = vec4 (vc, 1.0);"
+"     gl_Position = vec4 (vp, 1.0);"
+"}";
+
 const char* fragment_shader =
 "#version 330\n"
 "out vec4 fragColor;"
 "void main () {"
 "     fragColor = vec4 (0.4, 0.8, 1.0, 1.0);"
 "}";
+
+const char* fragment_shader2 =
+"#version 330\n"
+"out vec4 fragColor;"
+"void main () {"
+"     fragColor = vec4 (1.0, 0.0, 0.0, 1.0);"
+"}";
+
 
 int main(void)
 {
@@ -104,6 +121,11 @@ int main(void)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(squarePoints), squarePoints, GL_STATIC_DRAW);
 
+	GLuint VBO2 = 0;
+	glGenBuffers(1, &VBO2); // generate the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+
 	//Vertex Array Object (VAO)
 	GLuint VAO = 0;
 	glGenVertexArrays(1, &VAO); //generate the VAO
@@ -112,6 +134,14 @@ int main(void)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//index, pocet, typ, normalized, velikost jednoho vrcholu, pocatek
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+
+	GLuint VAO2 = 0;
+	glGenVertexArrays(1, &VAO2); //generate the VAO
+	glBindVertexArray(VAO2); //bind the VAO
+	glEnableVertexAttribArray(0); //enable vertex attributes
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	//index, pocet, typ, normalized, velikost jednoho vrcholu, pocatek
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), NULL);
 
 	//create and compile shaders
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -125,16 +155,35 @@ int main(void)
 	glAttachShader(shaderProgram, vertexShader);
 	glLinkProgram(shaderProgram);
 
+	GLuint vertexShader2 = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader2, 1, &vertex_shader2, NULL);
+	glCompileShader(vertexShader2);
+	GLuint fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader2, 1, &fragment_shader2, NULL);
+	glCompileShader(fragmentShader2);
+	GLuint shaderProgram2 = glCreateProgram();
+	glAttachShader(shaderProgram2, fragmentShader2);
+	glAttachShader(shaderProgram2, vertexShader2);
+	glLinkProgram(shaderProgram2);
+
 
 	while (!glfwWindowShouldClose(window)) {
 		// clear color and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		glUseProgram(shaderProgram);
-		
+
 		glBindVertexArray(VAO);
 		// draw triangles
 		glDrawArrays(GL_TRIANGLES, 0, 6); //mode,first,count
+
+		glUseProgram(shaderProgram2);
+
+		glBindVertexArray(VAO2);
+		// draw triangles
+		glDrawArrays(GL_TRIANGLES, 0, 3); //mode,first,count
+
+
 
 		// update other events like input handling
 		glfwPollEvents();
