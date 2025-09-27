@@ -1,14 +1,21 @@
 #pragma once
 
+#include <cstddef>
+#include <iostream>
+#include "Shader.h"
+#include "Model.h"
+
 class ShaderProgram
 {
 public:
-	ShaderProgram();
-	void applyVertexShader(char* shader);
-	void applyFragmentShader(char* shader);
+	ShaderProgram(Shader& shader);
+	void attachShader();
+	void setModel(Model& model);
+	void applyShaderProgram();
 
 private:
-	char* vertexShader = nullptr;
-	char* fragmentShader = nullptr;
+	GLuint shaderProgram;
+	Shader* shader;
+	Model* model;
 };
 
