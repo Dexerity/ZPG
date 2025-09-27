@@ -23,23 +23,31 @@ Application::Application(int width, int height)
 
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
+
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetWindowFocusCallback(window, window_focus_callback);
+	glfwSetWindowIconifyCallback(window, window_iconify_callback);
+	glfwSetWindowSizeCallback(window, window_size_callback);
+	glfwSetCursorPosCallback(window, cursor_callback);
+	glfwSetMouseButtonCallback(window, button_callback);
 }
 
 void Application::Run()
 {
 	while (!glfwWindowShouldClose(window)) {
-		// clear color and depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shaderProgram->setModel(*model);
-		shaderProgram->applyShaderProgram();
-		glDrawArrays(GL_TRIANGLES, 0, 3 * 6);
+		for (Model* m : models)
+		{
+			shaderProgram->setModel(*m);
+			shaderProgram->applyShaderProgram();
+			glDrawArrays(GL_TRIANGLES, 0, m->getPointCount());
+		}
 
+		//IMPORTANT
+		//MOVE DRAW FUNCTION TO MODEL CLASS
 
-
-		// update other events like input handling
 		glfwPollEvents();
-		// put the stuff we’ve been drawing onto the display
 		glfwSwapBuffers(window);
 	}
 
@@ -103,7 +111,15 @@ void Application::createModels()
 		0.87f, 0.5f, 0.0f,   1.0f, 0.0f, 1.0f,
 		0.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f
 	};
-	this->model = new Model(hexagon, sizeof(hexagon));
+
+	float triangle[] = {
+		-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
+		 0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+	};
+
+	models.push_back(new Model(hexagon, sizeof(hexagon)));
+	models.push_back(new Model(triangle, sizeof(triangle)));
 }
 
 void Application::error_callback(int error, const char* description) { fputs(description, stderr); }

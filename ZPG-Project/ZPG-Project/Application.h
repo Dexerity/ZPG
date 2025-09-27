@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <cstdlib>
+#include <vector>
 #include <GLFW/glfw3.h>
 
 class Application
@@ -26,6 +27,6 @@ public:
 private:
 	GLFWwindow* window = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
-	Model* model = nullptr;
+	std::vector<Model*> models;
 	Shader* shader = nullptr;
 };
