@@ -23,7 +23,8 @@ int Model::getPointCount()
 	return this->pointCount;
 }
 
-GLuint Model::getVAO()
+void Model::drawModel()
 {
-	return this->VAO;
+	glBindVertexArray(this->VAO);
+	glDrawArrays(GL_TRIANGLES, 0, pointCount);
 }

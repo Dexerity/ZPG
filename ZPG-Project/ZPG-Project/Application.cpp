@@ -39,13 +39,9 @@ void Application::Run()
 
 		for (Model* m : models)
 		{
-			shaderProgram->setModel(*m);
 			shaderProgram->applyShaderProgram();
-			glDrawArrays(GL_TRIANGLES, 0, m->getPointCount());
+			m->drawModel();
 		}
-
-		//IMPORTANT
-		//MOVE DRAW FUNCTION TO MODEL CLASS
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
