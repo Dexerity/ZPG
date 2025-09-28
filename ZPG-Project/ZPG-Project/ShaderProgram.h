@@ -8,7 +8,7 @@ class ShaderProgram
 {
 public:
 	ShaderProgram(Shader& shader);
-	void attachShader();
+	void setTimeUniform(float time);
 	void applyShaderProgram();
 
 private:

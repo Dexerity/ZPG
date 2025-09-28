@@ -37,11 +37,20 @@ void Application::Run()
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (Model* m : models)
-		{
-			shaderProgram->applyShaderProgram();
-			m->drawModel();
-		}
+		shaderPrograms[0]->applyShaderProgram();
+		models[0]->drawModel();
+
+		//shaderPrograms[1]->applyShaderProgram();
+		//models[1]->drawModel();
+
+		
+		float t = (float)glfwGetTime();
+		shaderPrograms[1]->setTimeUniform(t);
+		shaderPrograms[1]->applyShaderProgram();
+		models[1]->drawModel();
+
+		//shaderPrograms[2]->applyShaderProgram();
+		//models[2]->drawModel();
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
@@ -76,8 +85,56 @@ void Application::createShaders()
 
 	this->shader = new Shader(vertex_shader, fragment_shader);
 
-	this->shaderProgram = new ShaderProgram(*shader);
-	shaderProgram->attachShader();
+	shaderPrograms.push_back(new ShaderProgram(*shader));
+
+	const char* vertex_shader2 =
+		"#version 330\n"
+		"layout(location=0) in vec3 vp;"
+		"layout(location=1) in vec3 vc;"
+		"out vec3 color;"
+		"void main () {"
+		"	  color = vc;"
+		"     gl_Position = vec4 (vp, 1.0);"
+		"}";
+
+	const char* fragment_shader2 =
+		"#version 330\n"
+		"in vec3 color;"
+		"out vec4 fragColor;"
+		"uniform float time;"
+		"void main () {"
+		"    float r = abs(sin(time));"
+		"    float g = abs(sin(time + 2.0));"
+		"    float b = abs(sin(time + 4.0));"
+		"    fragColor = vec4(r, g, b, 1.0);"
+		"}";
+
+	this->shader = new Shader(vertex_shader2, fragment_shader2);
+
+	shaderPrograms.push_back(new ShaderProgram(*shader));
+
+	const char* vertex_shader3 =
+		"#version 330\n"
+		"layout(location=0) in vec3 vp;"
+		"layout(location=1) in vec3 vc;"
+		"out vec3 color;"
+		"void main () {"
+		"	  color = vc;"
+		"     gl_Position = vec4 (vp, 1.0);"
+		"}";
+
+	const char* fragment_shader3 =
+		"#version 330\n"
+		"in vec3 color;"
+		"out vec4 fragColor;"
+		"void main () {"
+		"	  fragColor = vec4 (1.0, 1.0, 0.0, 0.5);"
+		"}";
+
+	this->shader = new Shader(vertex_shader3, fragment_shader3);
+
+	shaderPrograms.push_back(new ShaderProgram(*shader));
+
 }
 
 void Application::createModels()
@@ -114,8 +171,18 @@ void Application::createModels()
 		 0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
 	};
 
-	models.push_back(new Model(hexagon, sizeof(hexagon)));
-	models.push_back(new Model(triangle, sizeof(triangle)));
+	float square[] = {
+		0.7f, 0.9f, 0.0f,   1.0f, 0.0f, 0.0f,
+		0.9f, 0.9f, 0.0f,   0.0f, 1.0f, 0.0f,
+		0.9f, 0.7f, 0.0f,   0.0f, 0.0f, 1.0f,
+		0.9f, 0.7f, 0.0f,   1.0f, 0.0f, 0.0f,
+		0.7f, 0.7f, 0.0f,   0.0f, 0.0f, 1.0f,
+		0.7f, 0.9f, 0.0f,   1.0f, 1.0f, 0.0f
+	};
+
+	models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));
+	models.push_back(new Model(triangle, sizeof(triangle) / sizeof(float)));
+	models.push_back(new Model(square, sizeof(square) / sizeof(float)));
 }
 
 void Application::error_callback(int error, const char* description) { fputs(description, stderr); }

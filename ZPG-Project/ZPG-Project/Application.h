@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <vector>
+
 #include <GLFW/glfw3.h>
 
 class Application
@@ -26,7 +27,7 @@ public:
 	static void button_callback(GLFWwindow* window, int button, int action, int mode);
 private:
 	GLFWwindow* window = nullptr;
-	ShaderProgram* shaderProgram = nullptr;
+	std::vector<ShaderProgram*> shaderPrograms;
 	std::vector<Model*> models;
 	Shader* shader = nullptr;
 };

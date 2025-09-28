@@ -1,4 +1,4 @@
-﻿#include "Application.h"e
+﻿#include "Application.h"
 
 int main(void)
 {
