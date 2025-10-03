@@ -40,4 +40,5 @@ private:
 	std::vector<Model*> models;
 	std::vector<Scene*> scenes;
 	Shader* shader = nullptr;
+	static int activeScene;
 };

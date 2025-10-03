@@ -1,5 +1,6 @@
 #include "Application.h"
 
+int Application::activeScene = 1;
 
 Application::Application(int width, int height)
 {
@@ -41,7 +42,7 @@ void Application::Run()
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		scenes[0]->drawObjects();
+		scenes[activeScene - 1]->drawObjects();
 
 		angle += 0.1;
 		M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -186,6 +187,12 @@ void Application::createScenes()
 {
 	scenes.push_back(new Scene());
 	scenes[0]->dObjects.push_back(new DrawableObject(models[0], shaderPrograms[0]));
+
+	scenes.push_back(new Scene());
+	scenes[1]->dObjects.push_back(new DrawableObject(models[1], shaderPrograms[0]));
+
+	scenes.push_back(new Scene());
+	scenes[2]->dObjects.push_back(new DrawableObject(models[2], shaderPrograms[0]));
 }
 
 void Application::error_callback(int error, const char* description) { fputs(description, stderr); }
@@ -194,6 +201,13 @@ void Application::key_callback(GLFWwindow* window, int key, int scancode, int ac
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+		activeScene = 1;
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+		activeScene = 2;
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+		activeScene = 3;
 	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }
 
