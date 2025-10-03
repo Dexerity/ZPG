@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "ShaderProgram.h"
 #include "DrawableObject.h"
+#include "Scene.h"
 
 #include <stdio.h>
 #include <cstdlib>
@@ -24,6 +25,7 @@ public:
 	void Run();
 	void createShaders();
 	void createModels();
+	void createScenes();
 
 	static void error_callback(int error, const char* description);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -36,5 +38,6 @@ private:
 	GLFWwindow* window = nullptr;
 	std::vector<ShaderProgram*> shaderPrograms;
 	std::vector<Model*> models;
+	std::vector<Scene*> scenes;
 	Shader* shader = nullptr;
 };

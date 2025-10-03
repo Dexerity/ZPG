@@ -37,12 +37,11 @@ void Application::Run()
 	float angle = 0;
 	glm::mat4 M = glm::mat4(1.0f);
 
-	DrawableObject object(models[0], shaderPrograms[0]);
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		object.DrawObject();
+		scenes[0]->drawObjects();
 
 		angle += 0.1;
 		M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -181,6 +180,12 @@ void Application::createModels()
 	models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));
 	models.push_back(new Model(triangle, sizeof(triangle) / sizeof(float)));
 	models.push_back(new Model(square, sizeof(square) / sizeof(float)));
+}
+
+void Application::createScenes()
+{
+	scenes.push_back(new Scene());
+	scenes[0]->dObjects.push_back(new DrawableObject(models[0], shaderPrograms[0]));
 }
 
 void Application::error_callback(int error, const char* description) { fputs(description, stderr); }
