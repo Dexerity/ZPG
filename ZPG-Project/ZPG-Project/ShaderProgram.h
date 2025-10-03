@@ -13,10 +13,12 @@ public:
 	ShaderProgram(Shader& shader);
 	void applyShaderProgram();
 	void setUniform(const std::string& name, const glm::mat4& matrix);
+	void setUniform(const std::string& name, const int value);
+	void setUniform(const std::string& name, const float value);
 
 private:
 	GLuint shaderProgram;
-	GLuint idModelTransform;
+	GLuint idUniform;
 	Shader* shader;
 };
 
