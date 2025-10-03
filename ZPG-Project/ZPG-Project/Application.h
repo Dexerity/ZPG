@@ -6,6 +6,11 @@
 #include "DrawableObject.h"
 #include "Scene.h"
 
+#include "Transformation.h"
+#include "Translate.h"
+#include "Rotate.h"
+#include "Scale.h"
+
 #include <stdio.h>
 #include <cstdlib>
 #include <vector>

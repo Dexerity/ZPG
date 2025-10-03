@@ -37,6 +37,14 @@ void Application::Run()
 {
 	float angle = 0;
 	glm::mat4 M = glm::mat4(1.0f);
+	M = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+
+
+	Transformation *transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.1f, 0.1f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(1.0f, 1.5f, 1.0f)));
+	transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 0.0f, 1.0f), 45.0f));
+	this->scenes[1]->dObjects[0]->addTransform(transform);
 
 
 	while (!glfwWindowShouldClose(window)) {
@@ -44,9 +52,9 @@ void Application::Run()
 
 		scenes[activeScene - 1]->drawObjects();
 
-		angle += 0.1;
+		/*angle += 0.1;
 		M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-		shaderPrograms[1]->setUniform("modelMatrix", M);
+		shaderPrograms[1]->setUniform("modelMatrix", M);*/
 
 
 		//shaderPrograms[2]->applyShaderProgram();
@@ -186,13 +194,13 @@ void Application::createModels()
 void Application::createScenes()
 {
 	scenes.push_back(new Scene());
-	scenes[0]->dObjects.push_back(new DrawableObject(models[0], shaderPrograms[0]));
+	scenes[0]->dObjects.push_back(new DrawableObject(models[0], shaderPrograms[1]));
 
 	scenes.push_back(new Scene());
-	scenes[1]->dObjects.push_back(new DrawableObject(models[1], shaderPrograms[0]));
+	scenes[1]->dObjects.push_back(new DrawableObject(models[1], shaderPrograms[1]));
 
 	scenes.push_back(new Scene());
-	scenes[2]->dObjects.push_back(new DrawableObject(models[2], shaderPrograms[0]));
+	scenes[2]->dObjects.push_back(new DrawableObject(models[2], shaderPrograms[1]));
 }
 
 void Application::error_callback(int error, const char* description) { fputs(description, stderr); }
