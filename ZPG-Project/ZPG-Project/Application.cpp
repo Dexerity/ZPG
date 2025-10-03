@@ -34,20 +34,20 @@ Application::Application(int width, int height)
 
 void Application::Run()
 {
+	float angle = 0;
+	glm::mat4 M = glm::mat4(1.0f);
+
+	DrawableObject object(models[0], shaderPrograms[0]);
+
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shaderPrograms[0]->applyShaderProgram();
-		models[0]->drawModel();
+		object.DrawObject();
 
-		//shaderPrograms[1]->applyShaderProgram();
-		//models[1]->drawModel();
+		angle += 0.1;
+		M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		shaderPrograms[1]->setUniform("modelMatrix", M);
 
-		
-		float t = (float)glfwGetTime();
-		shaderPrograms[1]->setTimeUniform(t);
-		shaderPrograms[1]->applyShaderProgram();
-		models[1]->drawModel();
 
 		//shaderPrograms[2]->applyShaderProgram();
 		//models[2]->drawModel();
@@ -91,22 +91,20 @@ void Application::createShaders()
 		"#version 330\n"
 		"layout(location=0) in vec3 vp;"
 		"layout(location=1) in vec3 vc;"
+		"uniform mat4 modelMatrix;"
 		"out vec3 color;"
 		"void main () {"
 		"	  color = vc;"
-		"     gl_Position = vec4 (vp, 1.0);"
+		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
 		"}";
 
 	const char* fragment_shader2 =
 		"#version 330\n"
 		"in vec3 color;"
 		"out vec4 fragColor;"
-		"uniform float time;"
 		"void main () {"
-		"    float r = abs(sin(time));"
-		"    float g = abs(sin(time + 2.0));"
-		"    float b = abs(sin(time + 4.0));"
-		"    fragColor = vec4(r, g, b, 1.0);"
+		"    fragColor = vec4(1.0, 0.0, 0.0, 1.0);"
+		"    fragColor = vec4 (color, 1.0);"
 		"}";
 
 	this->shader = new Shader(vertex_shader2, fragment_shader2);
@@ -172,12 +170,12 @@ void Application::createModels()
 	};
 
 	float square[] = {
-		0.7f, 0.9f, 0.0f,   1.0f, 0.0f, 0.0f,
-		0.9f, 0.9f, 0.0f,   0.0f, 1.0f, 0.0f,
-		0.9f, 0.7f, 0.0f,   0.0f, 0.0f, 1.0f,
-		0.9f, 0.7f, 0.0f,   1.0f, 0.0f, 0.0f,
-		0.7f, 0.7f, 0.0f,   0.0f, 0.0f, 1.0f,
-		0.7f, 0.9f, 0.0f,   1.0f, 1.0f, 0.0f
+		0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,
+		-0.5f, 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f
 	};
 
 	models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));
