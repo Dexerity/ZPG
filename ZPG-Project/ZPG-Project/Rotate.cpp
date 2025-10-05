@@ -6,7 +6,7 @@ Rotate::Rotate(glm::vec3 m, float angle)
 	this->angle = angle;
 }
 
-glm::mat4 Rotate::applyTransform(ShaderProgram* shaderProgram, glm::mat4 matrix)
+glm::mat4 Rotate::applyTransform(glm::mat4 matrix)
 {
-	return glm::rotate(matrix, this->angle, this->vector);
+	return glm::rotate(matrix, glm::radians(this->angle), this->vector);
 }

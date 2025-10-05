@@ -10,6 +10,15 @@
 #include "Translate.h"
 #include "Rotate.h"
 #include "Scale.h"
+#include "DynamicRotate.h"
+
+#include "Models/sphere.h"
+#include "Models/tree.h"
+#include "Models/plain.h"
+#include "Models/gift.h"
+#include "Models/bushes.h"
+#include "Models/suzi_flat.h"
+#include "Models/suzi_smooth.h"
 
 #include <stdio.h>
 #include <cstdlib>
@@ -46,4 +55,5 @@ private:
 	std::vector<Scene*> scenes;
 	Shader* shader = nullptr;
 	static int activeScene;
+	static int width, height;
 };

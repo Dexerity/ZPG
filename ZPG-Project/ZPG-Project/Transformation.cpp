@@ -7,12 +7,12 @@ Transformation::Transformation()
 
 void Transformation::applyTransforms(ShaderProgram* shaderProgram)
 {
-for (int i = 0; i < transforms.size(); i++)
-{
-	this->matrix = transforms[i]->applyTransform(shaderProgram, this->matrix);
-}
+   for (int i = 0; i < transforms.size(); i++)
+   {
+       this->matrix = transforms[i]->applyTransform(this->matrix);
+   }
 
-shaderProgram->setUniform("modelMatrix", this->matrix);
+   shaderProgram->setUniform("modelMatrix", this->matrix);
 }
 
 void Transformation::resetMatrix()

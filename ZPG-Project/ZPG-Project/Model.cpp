@@ -1,7 +1,7 @@
 #include "Model.h"
 
 
-Model::Model(float* points, int pointCount)
+Model::Model(const float* points, int pointCount)
 {
 	this->pointCount = pointCount / 6;
 
