@@ -12,6 +12,12 @@ void DrawableObject::addTransform(Transformation* transform)
 	this->transformation = transform;
 }
 
+void DrawableObject::addCameraMatrises(Camera camera)
+{
+	this->shaderProgram->setUniform("viewMatrix", camera.getCamera());
+	this->shaderProgram->setUniform("projectionMatrix", camera.projectionMatrix);
+}
+
 void DrawableObject::DrawObject()
 {
 	shaderProgram->applyShaderProgram();

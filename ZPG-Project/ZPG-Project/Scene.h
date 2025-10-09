@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "DrawableObject.h"
+#include "Camera.h"
 
 class Scene
 {
@@ -10,6 +11,6 @@ public:
 	void drawObjects();
 	std::vector<DrawableObject*> dObjects;
 private:
-	
+	Camera* camera;
 };
 

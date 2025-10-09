@@ -53,14 +53,6 @@ void Application::Run()
 
 		scenes[activeScene - 1]->drawObjects();
 
-		/*angle += 0.1;
-		M = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-		shaderPrograms[1]->setUniform("modelMatrix", M);*/
-
-
-		//shaderPrograms[2]->applyShaderProgram();
-		//models[2]->drawModel();
-
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}
@@ -78,10 +70,12 @@ void Application::createShaders()
 		"layout(location=0) in vec3 vp;"
 		"layout(location=1) in vec3 vc;"
 		"uniform mat4 modelMatrix;"
+		"uniform mat4 viewMatrix;"
+		"uniform mat4 projectionMatrix;"
 		"out vec3 color;"
 		"void main () {"
 		"	  color = vc;"
-		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
 		"}";
 
 	const char* fragment_shader =
@@ -101,10 +95,12 @@ void Application::createShaders()
 		"layout(location=0) in vec3 vp;"
 		"layout(location=1) in vec3 vc;"
 		"uniform mat4 modelMatrix;"
+		"uniform mat4 viewMatrix;"
+		"uniform mat4 projectionMatrix;"
 		"out vec3 color;"
 		"void main () {"
 		"	  color = vc;"
-		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
 		"}";
 
 	const char* fragment_shader2 =
@@ -125,10 +121,12 @@ void Application::createShaders()
 		"layout(location=0) in vec3 vp;"
 		"layout(location=1) in vec3 vc;"
 		"uniform mat4 modelMatrix;"
+		"uniform mat4 viewMatrix;"
+		"uniform mat4 projectionMatrix;"
 		"out vec3 color;"
 		"void main () {"
 		"	  color = vc;"
-		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
 		"}";
 
 	const char* fragment_shader3 =
@@ -341,7 +339,10 @@ void Application::window_size_callback(GLFWwindow* window, int widthW, int heigh
 	height = heightW;
 }
 
-void Application::cursor_callback(GLFWwindow* window, double x, double y) { printf("cursor_callback \n"); }
+void Application::cursor_callback(GLFWwindow* window, double x, double y) 
+{ 
+	
+}
 
 void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
 	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);

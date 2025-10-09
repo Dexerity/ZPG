@@ -3,12 +3,14 @@
 #include "Model.h"
 #include "ShaderProgram.h"
 #include "Transformation.h"
+#include "Camera.h"
 
 class DrawableObject
 {
 public:
 	DrawableObject(Model* model, ShaderProgram* shaderProgram);
 	void addTransform(Transformation* transform);
+	void addCameraMatrises(Camera camera);
 	void DrawObject();
 private:
 	Model* model = nullptr;
