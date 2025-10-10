@@ -6,8 +6,6 @@ Scene::Scene(Controller* controller)
 	this->controller = controller;
 }
 
-
-
 void Scene::drawObjects()
 {
 	camera.updateCamera(this->controller->getMouseX(), this->controller->getMouseY());
