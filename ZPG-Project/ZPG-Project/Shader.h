@@ -9,8 +9,7 @@ class Shader
 {
 public:
 	Shader(const char* vertexString, const char* fragmentString);
-	GLuint getVertexShader();
-	GLuint getFragmentShader();
+	void attachShader(GLuint progID);
 	
 private:
 	GLuint vertexShader;

@@ -7,8 +7,7 @@
 class Model
 {
 public: 
-	Model(float* points, int pointCount);
-	int getPointCount();
+	Model(const float* points, int pointCount);
 	void drawModel();
 private:
 	GLuint VAO;

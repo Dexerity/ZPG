@@ -1,13 +1,13 @@
 #include "ShaderProgram.h"
 
-
 ShaderProgram::ShaderProgram(Shader& shader) 
 {
 	this->shader = &shader;
 	this->shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, this->shader->getVertexShader());
-	glAttachShader(shaderProgram, this->shader->getFragmentShader());
+	shader.attachShader(this->shaderProgram);
 	glLinkProgram(shaderProgram);
+
+	
 };
 
 void ShaderProgram::applyShaderProgram() 
@@ -15,11 +15,47 @@ void ShaderProgram::applyShaderProgram()
 	glUseProgram(this->shaderProgram);
 }
 
-void ShaderProgram::setTimeUniform(float time) 
+void ShaderProgram::setUniform(const std::string& name, const glm::mat4& matrix)
 {
-	GLint timeLocation = glGetUniformLocation(this->shaderProgram, "time");
-	if (timeLocation != -1) {
-		glUseProgram(this->shaderProgram);
-		glUniform1f(timeLocation, time);
+	this->idUniform = glGetUniformLocation(this->shaderProgram, name.c_str());
+
+	if (this->idUniform == -1)
+	{
+		fprintf(stderr, "Couldn't find uniform %s\n", name.c_str());
+		exit(EXIT_FAILURE);
 	}
+
+	glUniformMatrix4fv(idUniform, 1, GL_FALSE, &matrix[0][0]);
 }
+
+void ShaderProgram::setUniform(const std::string& name, const int value)
+{
+	this->idUniform = glGetUniformLocation(this->shaderProgram, name.c_str());
+
+	if (this->idUniform == -1)
+	{
+		fprintf(stderr, "Couldn't find uniform %s\n", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	glUniform1i(idUniform, value);
+}
+
+void ShaderProgram::setUniform(const std::string& name, const float value)
+{
+	this->idUniform = glGetUniformLocation(this->shaderProgram, name.c_str());
+	if (this->idUniform == -1) {
+		fprintf(stderr, "Couldn't find uniform %s\n", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+	glUniform1f(idUniform, value);
+}
+
+void ShaderProgram::Notify(NotifType type)
+{
+	if (type != CAMERA)
+		return;
+
+
+}
+

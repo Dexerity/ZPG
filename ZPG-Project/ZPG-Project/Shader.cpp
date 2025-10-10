@@ -30,12 +30,8 @@ Shader::Shader(const char* vertexString,const char* fragmentString)
 	}
 }
 
-GLuint Shader::getVertexShader()
-{ 
-	return this->vertexShader; 
-}
-
-GLuint Shader::getFragmentShader()
-{ 
-	return this->fragmentShader; 
+void Shader::attachShader(GLuint shaderProgram)
+{
+	glAttachShader(shaderProgram, this->vertexShader);
+	glAttachShader(shaderProgram, this->fragmentShader);
 }
