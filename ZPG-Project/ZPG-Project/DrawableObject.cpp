@@ -7,18 +7,20 @@ DrawableObject::DrawableObject(Model* model, ShaderProgram* shaderProgram)
 	this->transformation = new Transformation();
 }
 
+DrawableObject::~DrawableObject()
+{
+	if (transformation)
+	{
+		delete transformation;
+	}
+}
+
 void DrawableObject::addTransform(Transformation* transform)
 {
 	this->transformation = transform;
 }
 
-void DrawableObject::addCameraMatrises(Camera camera)
-{
-	this->shaderProgram->setUniform("viewMatrix", camera.getCamera());
-	this->shaderProgram->setUniform("projectionMatrix", camera.projectionMatrix);
-}
-
-void DrawableObject::DrawObject(Camera camera)
+void DrawableObject::DrawObject()
 {
 	shaderProgram->applyShaderProgram();
 	if (this->transformation)
@@ -26,6 +28,10 @@ void DrawableObject::DrawObject(Camera camera)
 		transformation->applyTransforms(shaderProgram);
 	}
 	model->drawModel();
-	addCameraMatrises(camera);
 	transformation->resetMatrix();
+}
+
+void DrawableObject::addCameraObserver(Camera* camera)
+{
+	camera->addObserver(this->shaderProgram);
 }

@@ -6,9 +6,12 @@ ShaderProgram::ShaderProgram(Shader& shader)
 	this->shaderProgram = glCreateProgram();
 	shader.attachShader(this->shaderProgram);
 	glLinkProgram(shaderProgram);
-
-	
 };
+
+ShaderProgram::~ShaderProgram() 
+{
+	glDeleteProgram(this->shaderProgram);
+}
 
 void ShaderProgram::applyShaderProgram() 
 { 
@@ -51,11 +54,11 @@ void ShaderProgram::setUniform(const std::string& name, const float value)
 	glUniform1f(idUniform, value);
 }
 
-void ShaderProgram::Notify(NotifType type)
+
+
+void ShaderProgram::Notify(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
-	if (type != CAMERA)
-		return;
-
-
+	this->setUniform("viewMatrix", viewMatrix);
+	this->setUniform("projectionMatrix", projectionMatrix);
 }
 

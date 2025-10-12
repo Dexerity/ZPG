@@ -9,6 +9,7 @@ class Scene
 {
 public:
 	Scene(Controller* controller);
+	~Scene();
 	void drawObjects();
 	std::vector<DrawableObject*> dObjects;
 private:

@@ -6,6 +6,18 @@ Scene::Scene(Controller* controller)
 	this->controller = controller;
 }
 
+Scene::~Scene()
+{
+	for (DrawableObject* object : dObjects)
+	{
+		if (object)
+		{
+			delete object;
+		}
+	}
+	delete controller;
+}
+
 void Scene::drawObjects()
 {
 	camera.updateCamera(this->controller->getMouseX(), this->controller->getMouseY());
@@ -13,7 +25,8 @@ void Scene::drawObjects()
 
 	for (DrawableObject* object : dObjects)
 	{
-		object->DrawObject(this->camera);
+		object->addCameraObserver(&camera);
+		object->DrawObject();
 	}
 
 }

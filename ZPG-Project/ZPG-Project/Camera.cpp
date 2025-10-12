@@ -6,7 +6,7 @@
 Camera::Camera()
 {
 	this->projectionMatrix = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
-	this->cameraPosition = glm::vec3(0.0f, 0.0f, 0.9f);
+	this->cameraPosition = glm::vec3(0.0f, 0.2f, 0.9f);
 	this->cameraAngle = glm::vec3(0.0f, 0.0f, -1.0f);
 }
 
@@ -36,6 +36,8 @@ void Camera::setPosition(glm::vec3 position)
 
 	std::cout << "position input: " << position.x << " " << position.y << std::endl;
 	std::cout << "Camera position: " << this->cameraPosition.x << " " << this->cameraPosition.y << " " << this->cameraPosition.z << std::endl;
+
+	this->notifyObservers();
 }
 
 glm::mat4 Camera::getCamera(void) 
@@ -48,4 +50,24 @@ glm::mat4 Camera::getCamera(void)
 
 	//return glm::lookAt(this->cameraPosition, this->cameraPosition + this->cameraAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 	return glm::lookAt(this->cameraPosition, this->cameraAngle + this->cameraPosition, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	this->notifyObservers();
+}
+
+glm::mat4 Camera::getProjectionMatrix()
+{
+	return this->projectionMatrix;
+}
+
+void Camera::notifyObservers()
+{
+	for (Observer* observer : observers)
+	{
+		observer->Notify(getCamera(), getProjectionMatrix());
+	}
+}
+
+void Camera::addObserver(Observer* observer)
+{
+	observers.push_back(observer);
 }

@@ -46,7 +46,7 @@ void Application::Run()
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		scenes[activeScene - 1]->drawObjects();
+		scenes[this->controller->getActiveScene() - 1]->drawObjects();
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
@@ -116,10 +116,12 @@ void Application::createShaders()
 		"layout(location=0) in vec3 vp;"
 		"layout(location=1) in vec3 vc;"
 		"uniform mat4 modelMatrix;"
+		"uniform mat4 viewMatrix;"
+		"uniform mat4 projectionMatrix;"
 		"out vec3 color;"
 		"void main () {"
 		"	  color = vc;"
-		"     gl_Position = modelMatrix * vec4 (vp, 1.0);"
+		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
 		"}";
 
 	const char* fragment_shader3 =
@@ -302,7 +304,35 @@ void Application::createScenes()
 		yOffset *= -1;
 	}
 
+	//Scene 4
+	scenes.push_back(new Scene(this->controller));
 
+	scenes[3]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[1]));
+	transform = new Transformation();
+	transform->transforms.push_back(new Rotate(glm::vec3(1.0f, 0.0f, 0.0f), 90));
+	transform->transforms.push_back(new Scale(glm::vec3(5.0f, 5.0f, 5.0f)));
+	scenes[3]->dObjects[0]->addTransform(transform);
+
+	for (int i = 0; i < 256; i++)
+	{
+		transform = new Transformation();
+		if (i % 2 == 0)
+		{
+			scenes[3]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
+		}
+		else
+		{
+			scenes[3]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[1]));
+		}
+
+		//1,25
+
+		transform->transforms.push_back(new Translate(glm::vec3(-5.0f, 0.0f, 5.0f)));
+		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 0.625f, 0.0f, (i / 16) * -0.625f)));
+		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+		transform->transforms.push_back(new Scale(glm::vec3(0.5f, 0.5f, 0.5f)));
+		scenes[3]->dObjects[i + 1]->addTransform(transform);
+	}
 }
 
 

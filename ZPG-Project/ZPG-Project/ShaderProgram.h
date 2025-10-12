@@ -13,11 +13,12 @@ class ShaderProgram : public Observer
 {
 public:
 	ShaderProgram(Shader& shader);
+	~ShaderProgram();
 	void applyShaderProgram();
 	void setUniform(const std::string& name, const glm::mat4& matrix);
 	void setUniform(const std::string& name, const int value);
 	void setUniform(const std::string& name, const float value);
-	void Notify(NotifType type);
+	void Notify(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
 private:
 	GLuint shaderProgram;

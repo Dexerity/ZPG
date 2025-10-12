@@ -6,6 +6,7 @@
 double Controller::mouseX = 0;
 double Controller::mouseY = 0;
 glm::vec3 Controller::movementVector = glm::vec3(0.0f, 0.0f, 0.0f);
+int Controller::activeScene = 1;
 
 Controller::Controller(GLFWwindow* window)
 {
@@ -37,32 +38,26 @@ void Controller::key_callback(GLFWwindow* window, int key, int scancode, int act
 	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
 		activeScene = 3;*/
 
-	if (action == GLFW_PRESS)
+	static bool wPressed = false;
+	static bool sPressed = false;
+	static bool aPressed = false;
+	static bool dPressed = false;
+
+	if (key == GLFW_KEY_W) wPressed = (action != GLFW_RELEASE);
+	if (key == GLFW_KEY_S) sPressed = (action != GLFW_RELEASE);
+	if (key == GLFW_KEY_A) aPressed = (action != GLFW_RELEASE);
+	if (key == GLFW_KEY_D) dPressed = (action != GLFW_RELEASE);
+
+	movementVector.x = (dPressed ? 1.0f : 0.0f) - (aPressed ? 1.0f : 0.0f);
+	movementVector.z = (sPressed ? -1.0f : 0.0f) + (wPressed ? 1.0f : 0.0f);
+
+
+	if(key >= 49 && key <= 57 && action == GLFW_PRESS)
 	{
-		if (key == GLFW_KEY_W)
-		{
-			movementVector.z = 1.0f;
-		}
-		else if (key == GLFW_KEY_S)
-		{
-			movementVector.z = -1.0f;
-		}
-		
-		
-		if (key == GLFW_KEY_A)
-		{
-			movementVector.x = -1.0f;
-		}
-		else if (key == GLFW_KEY_D)
-		{
-			movementVector.x = 1.0f;
-		}
+		activeScene = key - 48;
 	}
-	else
-	{
-		movementVector.x = 0.0f;
-		movementVector.z = 0.0f;
-	}
+	
+
 
 	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }

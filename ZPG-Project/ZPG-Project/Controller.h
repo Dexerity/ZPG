@@ -21,8 +21,10 @@ public:
 	double getMouseX() { return mouseX; }
 	double getMouseY() { return mouseY; }
 	glm::vec3 getMovementVector() { return movementVector * 0.1f; }
+	int getActiveScene() { return activeScene; }
 private:
 	static double mouseX, mouseY;
 	static glm::vec3 movementVector;
+	static int activeScene;
 };
 

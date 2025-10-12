@@ -1,13 +1,9 @@
 #pragma once
 
-enum NotifType
-{
-	CAMERA
-};
-
+#include <glm/ext/matrix_float4x4.hpp>
 
 class Observer
 {
 public:
-	virtual void Notify(NotifType type) = 0;
+	virtual void Notify(glm::mat4 viewMatrix, glm::mat4 projectionMatrix) = 0;
 };
