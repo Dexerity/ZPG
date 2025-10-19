@@ -9,7 +9,7 @@ Application::Application(int width, int height)
 	this->width = width;
 	this->height = height;
 
-	glfwSetErrorCallback(error_callback);
+	//glfwSetErrorCallback(error_callback);
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		exit(EXIT_FAILURE);
@@ -30,12 +30,7 @@ Application::Application(int width, int height)
 	float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetWindowFocusCallback(window, window_focus_callback);
-	glfwSetWindowIconifyCallback(window, window_iconify_callback);
-	glfwSetWindowSizeCallback(window, window_size_callback);
-	glfwSetCursorPosCallback(window, cursor_callback);
-	glfwSetMouseButtonCallback(window, button_callback);
+	this->controller = new Controller(window);
 }
 
 void Application::Run()
@@ -51,7 +46,7 @@ void Application::Run()
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		scenes[activeScene - 1]->drawObjects();
+		scenes[this->controller->getActiveScene() - 1]->drawObjects();
 
 		glfwPollEvents();
 		glfwSwapBuffers(window);
@@ -143,18 +138,18 @@ void Application::createModels()
 void Application::createScenes()
 {
 	//Scene 1
-	scenes.push_back(new Scene());
-	scenes[0]->dObjects.push_back(new DrawableObject(models[1], shaderPrograms[1]));
+	scenes.push_back(new Scene(this->controller));
+	scenes[0]->dObjects.push_back(new DrawableObject(models[1], shaderPrograms[0]));
 
 	Transformation* transform = new Transformation();
-	transform->transforms.push_back(new Translate(glm::vec3(-0.2f, 0.3f, 0.0f)));
+	/*transform->transforms.push_back(new Translate(glm::vec3(-0.2f, 0.3f, 0.0f)));
 	transform->transforms.push_back(new Scale(glm::vec3(0.8f, 0.5f, 1.0f)));
 	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 0.0f, 1.0f), 0.5f));
-	this->scenes[0]->dObjects[0]->addTransform(transform);
+	this->scenes[0]->dObjects[0]->addTransform(transform);*/
 
 
 	//Scene 2
-	scenes.push_back(new Scene());
+	scenes.push_back(new Scene(this->controller));
 	scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
 	scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
 	scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
@@ -182,7 +177,7 @@ void Application::createScenes()
 
 	
 	//Scene 3
-	scenes.push_back(new Scene());
+	scenes.push_back(new Scene(this->controller));
 	scenes[2]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[2]));
 	scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
 	scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
@@ -241,41 +236,35 @@ void Application::createScenes()
 		yOffset *= -1;
 	}
 
+	//Scene 4
+	scenes.push_back(new Scene(this->controller));
 
+	scenes[3]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[1]));
+	transform = new Transformation();
+	transform->transforms.push_back(new Rotate(glm::vec3(1.0f, 0.0f, 0.0f), 90));
+	transform->transforms.push_back(new Scale(glm::vec3(5.0f, 5.0f, 5.0f)));
+	scenes[3]->dObjects[0]->addTransform(transform);
+
+	for (int i = 0; i < 256; i++)
+	{
+		transform = new Transformation();
+		if (i % 2 == 0)
+		{
+			scenes[3]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
+		}
+		else
+		{
+			scenes[3]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[1]));
+		}
+
+		//1,25
+
+		transform->transforms.push_back(new Translate(glm::vec3(-5.0f, 0.0f, 5.0f)));
+		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 0.625f, 0.0f, (i / 16) * -0.625f)));
+		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+		transform->transforms.push_back(new Scale(glm::vec3(0.5f, 0.5f, 0.5f)));
+		scenes[3]->dObjects[i + 1]->addTransform(transform);
+	}
 }
 
-void Application::error_callback(int error, const char* description) { fputs(description, stderr); }
 
-void Application::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
-		activeScene = 1;
-	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-		activeScene = 2;
-	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-		activeScene = 3;
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
-}
-
-void Application::window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
-
-void Application::window_iconify_callback(GLFWwindow* window, int iconified) { printf("window_iconify_callback \n"); }
-
-void Application::window_size_callback(GLFWwindow* window, int widthW, int heightW) {
-	printf("resize %d, %d \n", widthW, heightW);
-	glViewport(0, 0, widthW, heightW);
-	width = widthW;
-	height = heightW;
-}
-
-void Application::cursor_callback(GLFWwindow* window, double x, double y) 
-{ 
-	
-}
-
-void Application::button_callback(GLFWwindow* window, int button, int action, int mode) {
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
-}

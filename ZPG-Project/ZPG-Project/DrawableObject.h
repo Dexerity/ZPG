@@ -9,9 +9,11 @@ class DrawableObject
 {
 public:
 	DrawableObject(Model* model, ShaderProgram* shaderProgram);
+	~DrawableObject();
 	void addTransform(Transformation* transform);
-	void addCameraMatrises(Camera camera);
 	void DrawObject();
+	void addCameraObserver(Camera* camera);
+	
 private:
 	Model* model = nullptr;
 	ShaderProgram* shaderProgram = nullptr;

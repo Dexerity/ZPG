@@ -3,14 +3,17 @@
 
 #include "DrawableObject.h"
 #include "Camera.h"
+#include "Controller.h"
 
 class Scene
 {
 public:
-	Scene();
+	Scene(Controller* controller);
+	~Scene();
 	void drawObjects();
 	std::vector<DrawableObject*> dObjects;
 private:
-	Camera* camera;
+	Camera camera;
+	Controller* controller;
 };
 
