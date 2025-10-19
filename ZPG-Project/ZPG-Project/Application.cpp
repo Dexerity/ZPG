@@ -65,82 +65,14 @@ void Application::Run()
 
 void Application::createShaders()
 {
-	const char* vertex_shader =
-		"#version 330\n"
-		"layout(location=0) in vec3 vp;"
-		"layout(location=1) in vec3 vc;"
-		"uniform mat4 modelMatrix;"
-		"uniform mat4 viewMatrix;"
-		"uniform mat4 projectionMatrix;"
-		"out vec3 color;"
-		"void main () {"
-		"	  color = vc;"
-		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
-		"}";
 
-	const char* fragment_shader =
-		"#version 330\n"
-		"in vec3 color;"
-		"out vec4 fragColor;"
-		"void main () {"
-		"	  fragColor = vec4 (1.0, 0.0, 0.0, 1.0);"
-		"}";
-
-	this->shader = new Shader(vertex_shader, fragment_shader);
+	this->shader = new Shader();
+	shader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/verShader1.txt");
+	shader->createShaderFromFile(GL_FRAGMENT_SHADER, "./Shaders/fragShader1.txt");
 
 	shaderPrograms.push_back(new ShaderProgram(*shader));
-
-	const char* vertex_shader2 =
-		"#version 330\n"
-		"layout(location=0) in vec3 vp;"
-		"layout(location=1) in vec3 vc;"
-		"uniform mat4 modelMatrix;"
-		"uniform mat4 viewMatrix;"
-		"uniform mat4 projectionMatrix;"
-		"out vec3 color;"
-		"void main () {"
-		"	  color = vc;"
-		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
-		"}";
-
-	const char* fragment_shader2 =
-		"#version 330\n"
-		"in vec3 color;"
-		"out vec4 fragColor;"
-		"void main () {"
-		"    fragColor = vec4(1.0, 0.0, 0.0, 1.0);"
-		"    fragColor = vec4 (color, 1.0);"
-		"}";
-
-	this->shader = new Shader(vertex_shader2, fragment_shader2);
-
 	shaderPrograms.push_back(new ShaderProgram(*shader));
-
-	const char* vertex_shader3 =
-		"#version 330\n"
-		"layout(location=0) in vec3 vp;"
-		"layout(location=1) in vec3 vc;"
-		"uniform mat4 modelMatrix;"
-		"uniform mat4 viewMatrix;"
-		"uniform mat4 projectionMatrix;"
-		"out vec3 color;"
-		"void main () {"
-		"	  color = vc;"
-		"     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4 (vp, 1.0);"
-		"}";
-
-	const char* fragment_shader3 =
-		"#version 330\n"
-		"in vec3 color;"
-		"out vec4 fragColor;"
-		"void main () {"
-		"	  fragColor = vec4 (0.67, 1.0, 1.0, 1.0);"
-		"}";
-
-	this->shader = new Shader(vertex_shader3, fragment_shader3);
-
 	shaderPrograms.push_back(new ShaderProgram(*shader));
-
 }
 
 void Application::createModels()
