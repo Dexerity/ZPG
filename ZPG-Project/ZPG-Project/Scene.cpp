@@ -1,8 +1,8 @@
 #include "Scene.h"
 
-Scene::Scene(Controller* controller)
+Scene::Scene(Controller* controller, Camera* camera)
 {
-	this->camera = Camera();
+	this->camera = camera;
 	this->controller = controller;
 }
 
@@ -20,12 +20,11 @@ Scene::~Scene()
 
 void Scene::drawObjects()
 {
-	camera.updateCamera(this->controller->getMouseX(), this->controller->getMouseY());
-	camera.setPosition(this->controller->getMovementVector());
+	camera->updateCamera(this->controller->getMouseX(), this->controller->getMouseY());
+	camera->setPosition(this->controller->getMovementVector());
 
 	for (DrawableObject* object : dObjects)
 	{
-		object->addCameraObserver(&camera);
 		object->DrawObject();
 	}
 

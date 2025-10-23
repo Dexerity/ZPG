@@ -12,7 +12,6 @@ public:
 	~DrawableObject();
 	void addTransform(Transformation* transform);
 	void DrawObject();
-	void addCameraObserver(Camera* camera);
 	
 private:
 	Model* model = nullptr;

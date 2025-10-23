@@ -7,14 +7,6 @@ DrawableObject::DrawableObject(Model* model, ShaderProgram* shaderProgram)
 	this->transformation = new Transformation();
 }
 
-DrawableObject::~DrawableObject()
-{
-	if (transformation)
-	{
-		delete transformation;
-	}
-}
-
 void DrawableObject::addTransform(Transformation* transform)
 {
 	this->transformation = transform;
@@ -31,7 +23,9 @@ void DrawableObject::DrawObject()
 	transformation->resetMatrix();
 }
 
-void DrawableObject::addCameraObserver(Camera* camera)
+DrawableObject::~DrawableObject()
 {
-	camera->addObserver(this->shaderProgram);
+	delete this->model;
+	delete this->shaderProgram;
+	delete this->transformation;
 }

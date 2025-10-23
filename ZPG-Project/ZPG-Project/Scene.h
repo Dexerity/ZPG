@@ -8,12 +8,12 @@
 class Scene
 {
 public:
-	Scene(Controller* controller);
+	Scene(Controller* controller, Camera* camera);
 	~Scene();
 	void drawObjects();
 	std::vector<DrawableObject*> dObjects;
 private:
-	Camera camera;
+	Camera* camera;
 	Controller* controller;
 };
 

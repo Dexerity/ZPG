@@ -40,6 +40,11 @@ void Camera::setPosition(glm::vec3 position)
 	this->notifyObservers();
 }
 
+glm::vec3 Camera::getCameraPosition()
+{
+	return this->cameraPosition;
+}
+
 glm::mat4 Camera::getCamera(void) 
 {
 	//fi = fmod(glfwGetTime(), 360.0f);
@@ -57,17 +62,4 @@ glm::mat4 Camera::getCamera(void)
 glm::mat4 Camera::getProjectionMatrix()
 {
 	return this->projectionMatrix;
-}
-
-void Camera::notifyObservers()
-{
-	for (Observer* observer : observers)
-	{
-		observer->Notify(getCamera(), getProjectionMatrix());
-	}
-}
-
-void Camera::addObserver(Observer* observer)
-{
-	observers.push_back(observer);
 }
