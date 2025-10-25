@@ -10,10 +10,10 @@ void Subject::detachObserver(Observer* observer)
 	this->observers.erase(std::remove(this->observers.begin(), this->observers.end(), observer), this->observers.end());
 }
 
-void Subject::notifyObservers()
+void Subject::notifyObservers(enum SubjectType type)
 {
 	for (Observer* observer : observers)
 	{
-		observer->Notify();
+		observer->Notify(type);
 	}
 }

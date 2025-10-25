@@ -2,6 +2,13 @@
 #include <vector>
 #include "Observer.h"
 
+enum SubjectType
+{
+	CAMERA,
+	LIGHT,
+	INPUT
+};
+
 class Subject
 {
 protected:
@@ -9,7 +16,7 @@ protected:
 public:
 	void attachObserver(Observer* observer);
 	void detachObserver(Observer* observer);
-	void notifyObservers();
+	void notifyObservers(enum SubjectType type);
 };
 
 

@@ -11,6 +11,7 @@ class Shader
 {
 public:
 	Shader();
+	~Shader();
 	void createShader(GLenum shaderType, const char* shaderString);
 	void createShaderFromFile(GLenum shaderType, const char* shaderFile);
 	void attachShader(GLuint progID);

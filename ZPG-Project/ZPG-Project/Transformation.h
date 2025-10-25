@@ -9,8 +9,10 @@ class Transformation
 {
 public:
 	Transformation();
-	void applyTransforms(ShaderProgram* shaderProgram);
+	void applyTransforms();
+	void setTransforms(ShaderProgram* shaderProgram);
 	void resetMatrix();
+	glm::mat4 getMatrix() { return matrix; }
 	std::vector<ATransform*> transforms;
 private:
 	glm::mat4 matrix;

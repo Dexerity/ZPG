@@ -5,6 +5,12 @@ Shader::Shader()
 
 }
 
+Shader::~Shader() 
+{
+	glDeleteShader(this->vertexShader);
+	glDeleteShader(this->fragmentShader);
+}
+
 void Shader::createShader(GLenum shaderType, const char* shaderString)
 {
 	if (shaderType == GL_VERTEX_SHADER)

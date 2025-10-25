@@ -75,6 +75,9 @@
     <ClCompile Include="Subject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RandomTranslate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -93,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Transformation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicRotate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\bushes.h">
@@ -145,6 +145,12 @@
     </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomTranslate.h">
+      <Filter>Header Files\Tranformations</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicRotate.h">
+      <Filter>Header Files\Tranformations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

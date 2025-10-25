@@ -33,6 +33,26 @@ Application::Application(int width, int height)
 	this->controller = new Controller(window);
 }
 
+Application::~Application()
+{
+	for (auto shaderProgram : shaderPrograms)
+	{
+		delete shaderProgram;
+	}
+	for (auto model : models)
+	{
+		delete model;
+	}
+	for (auto scene : scenes)
+	{
+		delete scene;
+	}
+
+	delete controller;
+	delete shader;
+	delete window;
+}
+
 void Application::Run()
 {
 	float angle = 0;
@@ -62,24 +82,28 @@ void Application::createShaders()
 {
 	//Constant
 	Shader* constantShader = new Shader();
-	constantShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/constant.vert");
+	constantShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/general.vert");
 	constantShader->createShaderFromFile(GL_FRAGMENT_SHADER, "./Shaders/constant.frag");
 
 	//Lambert
 	Shader* lambertShader = new Shader();
-	lambertShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/lambert.vert");
+	lambertShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/general.vert");
 	lambertShader->createShaderFromFile(GL_FRAGMENT_SHADER, "./Shaders/lambert.frag");
 
-	////Phong
-	//Shader* phongVertex = new Shader("phong.vert", 'v', true);
-	//Shader* phongFragment = new Shader("phong.frag", 'f', true);
+	//Phong
+	Shader* phongShader = new Shader();
+	phongShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/general.vert");
+	phongShader->createShaderFromFile(GL_FRAGMENT_SHADER, "./Shaders/phong.frag");
 
-	////Blinn-Phong
-	//Shader* blinnPhongVertex = new Shader("blinnphong.vert", 'v', true);
-	//Shader* blinnPhongFragment = new Shader("blinnphong.frag", 'f', true);
+	//Blinn-Phong
+	Shader* blinnShader = new Shader();
+	blinnShader->createShaderFromFile(GL_VERTEX_SHADER, "./Shaders/general.vert");
+	blinnShader->createShaderFromFile(GL_FRAGMENT_SHADER, "./Shaders/blinnphong.frag");
 
 	shaderPrograms.push_back(new ShaderProgram(*constantShader));
 	shaderPrograms.push_back(new ShaderProgram(*lambertShader));
+	shaderPrograms.push_back(new ShaderProgram(*phongShader));
+	shaderPrograms.push_back(new ShaderProgram(*blinnShader));
 
 
 
@@ -128,8 +152,8 @@ void Application::createModels()
 
 	const float triangle[] = {
 		-0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-   0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
-   0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
+		0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
 	};
 
 	const float square[] = {
@@ -142,13 +166,13 @@ void Application::createModels()
 	};
 
 	const float plain2[] = {
-		1.0f, 1.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-	   -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+	   -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 
-	   -1.0f, 1.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-		1.0f, 1.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-	   -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f
+	   -1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+	   -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f
 	};
 
     models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));       // 0: hexagon
@@ -165,142 +189,156 @@ void Application::createModels()
 
 void Application::createScenes()
 {
-	//Scene 1
+	Transformation* transform = nullptr;
+
 	Camera* cam1 = new Camera();
-	Light* light1 = new Light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
+	std::vector<Light*> lights1;
+	lights1.push_back(new Light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
 
-	scenes.push_back(new Scene(this->controller, cam1));
+	scenes.push_back(new Scene(this->controller, cam1, lights1));
 
-	scenes[0]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
+	std::vector<DrawableObject*> dObjects;
 
-	Transformation* transform = new Transformation();
+	dObjects.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
+	dObjects.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
+	dObjects.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
+	dObjects.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
+
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.5f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	dObjects[0]->addTransform(transform);
+
+	transform = new Transformation();
 	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.5f, 0.0f)));
-	transform->transforms.push_back(new Scale(glm::vec3(0.2f, 0.2f, 0.2f)));
-	this->scenes[0]->dObjects[0]->addTransform(transform);
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	dObjects[1]->addTransform(transform);
 
-	//shaderPrograms[0]->attachCamera(cam1);
-	shaderPrograms[1]->attachCamera(cam1);
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(-0.5f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	dObjects[2]->addTransform(transform);
 
-	//shaderPrograms[0]->attachLight(light1);
-	shaderPrograms[1]->attachLight(light1);
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.0f, -0.5f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	dObjects[3]->addTransform(transform);
 
-	////Scene 2
-	//scenes.push_back(new Scene(this->controller));
-	//scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
-	//scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
-	//scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
-	//scenes[1]->dObjects.push_back(new DrawableObject(models[3], shaderPrograms[1]));
+	scenes[0]->addDrawableObjects(dObjects);
+	
+	////-------------------------------
 
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 1.0f)));
-	//transform->transforms.push_back(new Translate(glm::vec3(0.0f, 5.0f, 0.0f)));
-	//this->scenes[1]->dObjects[0]->addTransform(transform);
+	Camera* cam2 = new Camera();
+	std::vector<Light*> lights2;
+	lights2.push_back(new Light(glm::vec3(0.5f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
 
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 1.0f)));
-	//transform->transforms.push_back(new Translate(glm::vec3(5.0f, 0.0f, 0.0f)));
-	//this->scenes[1]->dObjects[1]->addTransform(transform);
-	//
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 1.0f)));
-	//transform->transforms.push_back(new Translate(glm::vec3(0.0f, -5.0f, 0.0f)));
-	//this->scenes[1]->dObjects[2]->addTransform(transform);
+	scenes.push_back(new Scene(this->controller, cam2, lights2));
 
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 1.0f)));
-	//transform->transforms.push_back(new Translate(glm::vec3(-5.0f, 0.0f, 0.0f)));
-	//this->scenes[1]->dObjects[3]->addTransform(transform);
+	std::vector<DrawableObject*> dObjects2;
 
-	//
-	////Scene 3
-	//scenes.push_back(new Scene(this->controller));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[2]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[1]));
+	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
 
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.9f)));
-	//this->scenes[2]->dObjects[0]->addTransform(transform);
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	dObjects2[0]->addTransform(transform);
 
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	transform = new Transformation();
-	//	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 1.0f)));
-	//	transform->transforms.push_back(new Translate(glm::vec3(-8.0f + (i * 4.0f), 0.0f, 0.0f)));
-	//	this->scenes[2]->dObjects[i + 1]->addTransform(transform);
-	//}
+	scenes[1]->addDrawableObjects(dObjects2);
+
+	////-------------------------------
+
+	//Camera* cam3 = new Camera();
+	//std::vector<Light*> lights3;
+	//lights3.push_back(new Light(glm::vec3(-0.3f, 0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f));
+	//lights3.push_back(new Light(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f));
+	//lights3.push_back(new Light(glm::vec3(0.3f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
+
+
+	//scenes.push_back(new Scene(this->controller, cam3, lights3));
+
+	//std::vector<DrawableObject*> dObjects3;
+
+	//dObjects3.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
 
 	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(1.0f, 0.5f, 1.0f)));
-	//transform->transforms.push_back(new Translate(glm::vec3(0.0f, -1.0f, 0.5f)));
-	//this->scenes[2]->dObjects[6]->addTransform(transform);
+	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	//dObjects3[0]->addTransform(transform);
 
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[0]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[0]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[0]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[0]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[0]));
+	//scenes[2]->addDrawableObjects(dObjects3);
 
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	transform = new Transformation();
-	//	transform->transforms.push_back(new Scale(glm::vec3(0.5f, 0.5f, 1.0f)));
-	//	transform->transforms.push_back(new Translate(glm::vec3(-1.6f + (i * 0.8f), -0.2f, 0.0f)));
-	//	this->scenes[2]->dObjects[i + 7]->addTransform(transform);
-	//}
+	////-------------------------------
 
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[8], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[9], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[8], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[9], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[8], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[9], shaderPrograms[1]));
-	//scenes[2]->dObjects.push_back(new DrawableObject(models[8], shaderPrograms[1]));
+	//Camera* cam4 = new Camera();
+	//std::vector<Light*> lights4;
+	//lights4.push_back(new Light(glm::vec3(-0.3f, 0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f));
+	//lights4.push_back(new Light(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f));
+	//lights4.push_back(new Light(glm::vec3(0.3f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
 
-	//float yOffset = 0.2;
-	//for (int i = 0; i < 7; i++)
-	//{
-	//	transform = new Transformation();
-	//	transform->transforms.push_back(new Translate(glm::vec3(-0.75f + (i * 0.25f), -0.6f + yOffset, 0.0f)));
-	//	transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), 180));
-	//	transform->transforms.push_back(new Scale(glm::vec3(0.15f, 0.15f, 0.2f)));
-	//	this->scenes[2]->dObjects[i + 12]->addTransform(transform);
-	//	yOffset *= -1;
-	//}
 
-	////Scene 4
-	//scenes.push_back(new Scene(this->controller));
+	//scenes.push_back(new Scene(this->controller, cam4, lights4));
 
-	//scenes[3]->dObjects.push_back(new DrawableObject(models[5], shaderPrograms[1]));
+	//std::vector<DrawableObject*> dObjects4;
+
+	//dObjects4.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(1.0f, 1.0f, 1.0f)));
+
 	//transform = new Transformation();
-	//transform->transforms.push_back(new Rotate(glm::vec3(1.0f, 0.0f, 0.0f), 90));
-	//transform->transforms.push_back(new Scale(glm::vec3(5.0f, 5.0f, 5.0f)));
-	//scenes[3]->dObjects[0]->addTransform(transform);
+	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	//dObjects4[0]->addTransform(transform);
 
-	//for (int i = 0; i < 256; i++)
-	//{
-	//	transform = new Transformation();
-	//	if (i % 2 == 0)
-	//	{
-	//		scenes[3]->dObjects.push_back(new DrawableObject(models[4], shaderPrograms[1]));
-	//	}
-	//	else
-	//	{
-	//		scenes[3]->dObjects.push_back(new DrawableObject(models[7], shaderPrograms[1]));
-	//	}
+	//scenes[3]->addDrawableObjects(dObjects4);
+	
+	
+	
+	//Scene 5
+	Camera* cam5 = new Camera();
+	std::vector<Light*> lights5;
 
-	//	//1,25
 
-	//	transform->transforms.push_back(new Translate(glm::vec3(-5.0f, 0.0f, 5.0f)));
-	//	transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 0.625f, 0.0f, (i / 16) * -0.625f)));
-	//	transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
-	//	transform->transforms.push_back(new Scale(glm::vec3(0.5f, 0.5f, 0.5f)));
-	//	scenes[3]->dObjects[i + 1]->addTransform(transform);
-	//}
+	for (int i = 0; i < 10; i++)
+	{
+		lights5.push_back(new Light(glm::vec3((rand() % 50 - 50) / 10.0, 0.2f, (rand() % 50 - 50) / 10.0), glm::vec3(1.0f, 1.0f, 0.0f), 1.0f));
+		transform = new Transformation();
+		transform->transforms.push_back(new RandomTranslate(glm::vec3(3.0f, 0.0f, 3.0f), 60));
+		lights5[i]->setTransformation(transform);
+	}
+	
+	
+	
+	
+
+	scenes.push_back(new Scene(this->controller, cam5, lights5));
+
+	std::vector<DrawableObject*> dObjects5;
+
+	dObjects5.push_back(new DrawableObject(models[5], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+	transform = new Transformation();
+	transform->transforms.push_back(new Scale(glm::vec3(10.0f, 0.0f, 10.0f)));
+	dObjects5[0]->addTransform(transform);
+
+	for (int i = 0; i < 256; i++)
+	{
+		transform = new Transformation();
+		if ((i / 16 + i % 16) % 2 == 0)
+		{
+			dObjects5.push_back(new DrawableObject(models[4], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+		}
+		else
+		{
+			dObjects5.push_back(new DrawableObject(models[7], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+		}
+
+		//1,25
+
+		transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
+		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
+		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+		transform->transforms.push_back(new Scale(glm::vec3(0.4f, 0.4f, 0.4f)));
+		dObjects5[i + 1]->addTransform(transform);
+	}
+
+
+	scenes[2]->addDrawableObjects(dObjects5);
+
 }
 
 

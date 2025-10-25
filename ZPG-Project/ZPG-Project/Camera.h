@@ -11,8 +11,10 @@ class Camera : public Subject
 {
 public:
 	Camera();
+	~Camera();
 	glm::mat4 getCamera(void);
 	void updateCamera(double x, double y);
+	void updateProjectionMatrix(int width, int height, double scrollOff);
 	void setPosition(glm::vec3 position);
 	glm::vec3 getCameraPosition();
 	glm::mat4 getProjectionMatrix();
@@ -23,6 +25,7 @@ private:
 	std::vector<Observer*> observers;
 	glm::vec3 cameraPosition;
 	glm::vec3 cameraAngle;
+	float FOV = 45.0f;
 	float alpha = 90;
 	float fi = 0;
 };

@@ -1,31 +1,48 @@
 #version 330
-in vec4 worldPosition;
+
+struct Light {
+    vec3 color;
+    float intensity;
+    vec3 position;
+};
+
+in vec3 worldPosition;
 in vec3 worldNormal;
-in vec3 camPos;
+
+uniform float k_c;
+uniform float k_l;
+uniform float k_q;
 
 uniform vec3 objectColor;
 
-uniform vec3 lightPosition;
-uniform vec3 lightColor;
-uniform float lightIntensity;
+uniform vec3 cameraPosition;
 
-out vec4 outColor;
+uniform Light lights[20];
+uniform int lightsCount;
+
+out vec4 fragColor;
 
 void main(void) {
-	vec3 normal = normalize(worldNormal);
-	vec3 viewDirection = normalize(camPos - worldPosition.xyz);
+    vec3 norm = normalize(worldNormal);
+    vec3 viewDir = normalize(cameraPosition - worldPosition);
 
-	vec3 lightToVector = normalize(lightPosition - worldPosition.xyz);
-	vec3 halfwayDir = normalize(lightToVector + viewDirection);
+	fragColor = vec4(0.0, 0.0, 0.0, 1);
 
-	vec3 ambient = vec3(0.1, 0.1, 0.1) * objectColor;
+    for (int i = 0; i < lightsCount; i++) {
+	float d = length(lights[i].position - worldPosition);
+	float lightAtt = 1.0 / (k_c + k_l * d + k_q * d * d);
 
-	float dotProduct = max(dot(normal, lightToVector),0.0);
-	vec3 diffuse = dotProduct * objectColor * lightColor * lightIntensity;
+        vec3 lightDir = normalize(lights[i].position - worldPosition);
 
-	float spec = pow(max(dot(normal, halfwayDir), 0.0), 16.0);
-	vec3 specular = spec * lightColor * lightIntensity;
+        vec4 ambient = 0.1 * vec4(lights[i].color, 1.0);
 
-	vec3 res = ambient + diffuse + specular;
-	outColor = vec4(res, 1.0);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec4 diffuse = diff * vec4(lights[i].color, 1.0) * lights[i].intensity;
+
+        vec3 halfDir = normalize(lightDir + viewDir);
+        float spec = pow(max(dot(norm, halfDir), 0.0), 32.0);
+        vec4 specular = spec * vec4(1.0, 1.0, 1.0, 1.0);
+
+        fragColor += (ambient + diffuse * vec4(objectColor, 1) + specular) * lightAtt;
+    }
 }

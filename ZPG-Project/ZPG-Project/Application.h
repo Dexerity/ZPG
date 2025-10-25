@@ -37,6 +37,7 @@ class Application
 {
 public:
 	Application(int width, int height);
+	~Application();
 	void Run();
 	void createShaders();
 	void createModels();

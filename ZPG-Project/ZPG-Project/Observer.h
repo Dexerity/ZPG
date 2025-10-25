@@ -5,5 +5,5 @@
 class Observer
 {
 public:
-	virtual void Notify() = 0;
+	virtual void Notify(enum SubjectType type) = 0;
 };
