@@ -28,6 +28,7 @@ void DrawableObject::DrawObject()
 
 	model->drawModel();
 	transformation->resetMatrix();
+	glUseProgram(0);
 }
 
 void DrawableObject::Notify(enum SubjectType type)

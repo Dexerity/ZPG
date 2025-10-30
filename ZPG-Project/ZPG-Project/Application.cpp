@@ -175,23 +175,24 @@ void Application::createModels()
 	   -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f
 	};
 
-    models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));       // 0: hexagon
-    models.push_back(new Model(triangle, sizeof(triangle) / sizeof(float)));     // 1: triangle
-    models.push_back(new Model(square, sizeof(square) / sizeof(float)));         // 2: square
-    models.push_back(new Model(sphere, sizeof(sphere) / sizeof(float)));         // 3: sphere
-    models.push_back(new Model(tree, sizeof(tree) / sizeof(float)));             // 4: tree
-    models.push_back(new Model(plain2, sizeof(plain2) / sizeof(float)));           // 5: plain
-    models.push_back(new Model(gift, sizeof(gift) / sizeof(float)));             // 6: gift
-    models.push_back(new Model(bushes, sizeof(bushes) / sizeof(float)));         // 7: bushes
-    models.push_back(new Model(suziFlat, sizeof(suziFlat) / sizeof(float)));     // 8: suziFlat
-    models.push_back(new Model(suziSmooth, sizeof(suziSmooth) / sizeof(float))); // 9: suziSmooth
+    //models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));       // 0: hexagon
+    //models.push_back(new Model(triangle, sizeof(triangle) / sizeof(float)));     // 1: triangle
+    //models.push_back(new Model(square, sizeof(square) / sizeof(float)));         // 2: square
+    //models.push_back(new Model(sphere, sizeof(sphere) / sizeof(float)));         // 3: sphere
+    //models.push_back(new Model(tree, sizeof(tree) / sizeof(float)));             // 4: tree
+    //models.push_back(new Model(plain2, sizeof(plain2) / sizeof(float)));           // 5: plain
+    //models.push_back(new Model(gift, sizeof(gift) / sizeof(float)));             // 6: gift
+    //models.push_back(new Model(bushes, sizeof(bushes) / sizeof(float)));         // 7: bushes
+    //models.push_back(new Model(suziFlat, sizeof(suziFlat) / sizeof(float)));     // 8: suziFlat
+    //models.push_back(new Model(suziSmooth, sizeof(suziSmooth) / sizeof(float))); // 9: suziSmooth
+	models.push_back(new Model("Car.obj"));
 }
 
 void Application::createScenes()
 {
 	Transformation* transform = nullptr;
 
-	Camera* cam1 = new Camera();
+	/*Camera* cam1 = new Camera();
 	std::vector<Light*> lights1;
 	lights1.push_back(new Light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
 
@@ -224,7 +225,7 @@ void Application::createScenes()
 	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
 	dObjects[3]->addTransform(transform);
 
-	scenes[0]->addDrawableObjects(dObjects);
+	scenes[0]->addDrawableObjects(dObjects);*/
 	
 	////-------------------------------
 
@@ -236,14 +237,14 @@ void Application::createScenes()
 
 	std::vector<DrawableObject*> dObjects2;
 
-	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
+	dObjects2.push_back(new DrawableObject(models[0], shaderPrograms[2], glm::vec3(1.0f, 1.0f, 1.0f)));
 
 	transform = new Transformation();
 	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.0f)));
 	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
 	dObjects2[0]->addTransform(transform);
 
-	scenes[1]->addDrawableObjects(dObjects2);
+	scenes[0]->addDrawableObjects(dObjects2);
 
 	////-------------------------------
 
@@ -289,55 +290,55 @@ void Application::createScenes()
 	
 	
 	
-	//Scene 5
-	Camera* cam5 = new Camera();
-	std::vector<Light*> lights5;
+	////Scene 5
+	//Camera* cam5 = new Camera();
+	//std::vector<Light*> lights5;
 
 
-	for (int i = 0; i < 10; i++)
-	{
-		lights5.push_back(new Light(glm::vec3((rand() % 50 - 50) / 10.0, 0.2f, (rand() % 50 - 50) / 10.0), glm::vec3(1.0f, 1.0f, 0.0f), 1.0f));
-		transform = new Transformation();
-		transform->transforms.push_back(new RandomTranslate(glm::vec3(3.0f, 0.0f, 3.0f), 60));
-		lights5[i]->setTransformation(transform);
-	}
-	
-	
-	
-	
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	lights5.push_back(new Light(glm::vec3((rand() % 50 - 50) / 10.0, 0.2f, (rand() % 50 - 50) / 10.0), glm::vec3(1.0f, 1.0f, 0.0f), 1.0f));
+	//	transform = new Transformation();
+	//	transform->transforms.push_back(new RandomTranslate(glm::vec3(3.0f, 0.0f, 3.0f), 60));
+	//	lights5[i]->setTransformation(transform);
+	//}
+	//
+	//
+	//
+	//
 
-	scenes.push_back(new Scene(this->controller, cam5, lights5));
+	//scenes.push_back(new Scene(this->controller, cam5, lights5));
 
-	std::vector<DrawableObject*> dObjects5;
+	//std::vector<DrawableObject*> dObjects5;
 
-	dObjects5.push_back(new DrawableObject(models[5], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-	transform = new Transformation();
-	transform->transforms.push_back(new Scale(glm::vec3(10.0f, 0.0f, 10.0f)));
-	dObjects5[0]->addTransform(transform);
+	//dObjects5.push_back(new DrawableObject(models[5], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
+	//transform = new Transformation();
+	//transform->transforms.push_back(new Scale(glm::vec3(10.0f, 0.0f, 10.0f)));
+	//dObjects5[0]->addTransform(transform);
 
-	for (int i = 0; i < 256; i++)
-	{
-		transform = new Transformation();
-		if ((i / 16 + i % 16) % 2 == 0)
-		{
-			dObjects5.push_back(new DrawableObject(models[4], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-		}
-		else
-		{
-			dObjects5.push_back(new DrawableObject(models[7], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-		}
+	//for (int i = 0; i < 256; i++)
+	//{
+	//	transform = new Transformation();
+	//	if ((i / 16 + i % 16) % 2 == 0)
+	//	{
+	//		dObjects5.push_back(new DrawableObject(models[4], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
+	//	}
+	//	else
+	//	{
+	//		dObjects5.push_back(new DrawableObject(models[7], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
+	//	}
 
-		//1,25
+	//	//1,25
 
-		transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
-		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
-		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
-		transform->transforms.push_back(new Scale(glm::vec3(0.4f, 0.4f, 0.4f)));
-		dObjects5[i + 1]->addTransform(transform);
-	}
+	//	transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
+	//	transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
+	//	transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+	//	transform->transforms.push_back(new Scale(glm::vec3(0.4f, 0.4f, 0.4f)));
+	//	dObjects5[i + 1]->addTransform(transform);
+	//}
 
 
-	scenes[2]->addDrawableObjects(dObjects5);
+	//scenes[2]->addDrawableObjects(dObjects5);
 
 }
 
