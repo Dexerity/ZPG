@@ -10,6 +10,8 @@ int Controller::activeScene = 1;
 int Controller::height = 900;
 int Controller::width = 1600;
 double Controller::scrollY = 0;
+bool Controller::mouseClicked[3] = { false, false, false };
+bool Controller::deleteClicked = false;
 
 Controller::Controller(GLFWwindow* window)
 {
@@ -67,6 +69,8 @@ void Controller::key_callback(GLFWwindow* window, int key, int scancode, int act
 		activeScene = key - 48;
 	}
 	
+	if (key == GLFW_KEY_DELETE)
+		Controller::deleteClicked = true;
 
 
 	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
@@ -91,10 +95,37 @@ void Controller::cursor_callback(GLFWwindow* window, double x, double y)
 }
 
 void Controller::button_callback(GLFWwindow* window, int button, int action, int mode) {
-	if (action == GLFW_PRESS) printf("button_callback [%d,%d,%d]\n", button, action, mode);
+	if (action == GLFW_PRESS) 
+	{
+		printf("button_callback [%d,%d,%d]\n", button, action, mode);
+		if (button >= 0 && button < 3) 
+		{
+			Controller::mouseClicked[button] = true;
+		}
+		
+	}
 }
 
 void Controller::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 	scrollY = yoffset;
 	printf("scroll_callback [%f,%f]\n", xoffset, yoffset);
+}
+
+bool Controller::wasClicked(int button)  
+{
+	if (button >= 0 && button < 3)
+		return mouseClicked[button];
+	
+	if (button == GLFW_KEY_DELETE)
+		return deleteClicked;
+
+	return false;
+}
+
+void Controller::resetClicks() 
+{
+	mouseClicked[0] = false;
+	mouseClicked[1] = false;
+	mouseClicked[2] = false;
+	deleteClicked = false;
 }

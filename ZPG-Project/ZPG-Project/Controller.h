@@ -28,11 +28,15 @@ public:
 	glm::vec3 getMovementVector() { return movementVector * 0.1f; }
 	int getActiveScene() { return activeScene; }
 	glm::vec2 getWindowSize() { return glm::vec2(width, height); }
+	bool wasClicked(int button);
+	void resetClicks();
 private:
 	static double mouseX, mouseY;
 	static double scrollY;
 	static glm::vec3 movementVector;
 	static int height, width;
 	static int activeScene;
+	static bool mouseClicked[3];
+	static bool deleteClicked;
 };
 

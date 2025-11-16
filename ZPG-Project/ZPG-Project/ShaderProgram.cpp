@@ -8,10 +8,6 @@ ShaderProgram::ShaderProgram(Shader& shader)
 	glLinkProgram(shaderProgram);
 
 	this->applyShaderProgram();
-
-	setUniform("k_l", 0.3f);
-	setUniform("k_q", 3.f);
-	setUniform("k_c", 1.0f);
 };
 
 ShaderProgram::~ShaderProgram() 
@@ -21,7 +17,7 @@ ShaderProgram::~ShaderProgram()
 	delete this->shader;
 }
 
-void ShaderProgram::applyShaderProgram() 
+void ShaderProgram::applyShaderProgram()
 { 
 	glUseProgram(this->shaderProgram);
 }

@@ -38,3 +38,18 @@ float Light::getIntensity()
 {
 	return this->intensity;
 }
+
+int Light::getType()
+{
+	return this->lightType;
+}
+
+glm::vec3 Light::getDirection()
+{
+	return glm::vec3(0.0f);
+}
+
+float Light::getAlpha()
+{
+	return alpha;
+}

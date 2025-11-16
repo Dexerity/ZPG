@@ -11,6 +11,7 @@ class Model
 {
 public: 
 	Model(const char* name);
+	Model(const float* points, int vertexCount, bool uv);
 	~Model();
 	void drawModel();
 private:

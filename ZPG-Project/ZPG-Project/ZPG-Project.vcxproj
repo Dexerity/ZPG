@@ -138,11 +138,11 @@
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="DrawableObject.cpp" />
     <ClCompile Include="DynamicRotate.cpp" />
+    <ClCompile Include="ALight.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Model.h" />
-    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RandomTranslate.cpp" />
     <ClCompile Include="ReflectorLight.cpp" />
     <ClCompile Include="Rotate.cpp" />
@@ -150,7 +150,10 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transformation.cpp" />
     <ClCompile Include="Translate.cpp" />
   </ItemGroup>
@@ -163,6 +166,7 @@
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="DrawableObject.h" />
     <ClInclude Include="DynamicRotate.h" />
+    <ClInclude Include="ALight.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Models\bushes.h" />
     <ClInclude Include="Models\gift.h" />
@@ -172,7 +176,6 @@
     <ClInclude Include="Models\suzi_smooth.h" />
     <ClInclude Include="Models\tree.h" />
     <ClInclude Include="Observer.h" />
-    <ClInclude Include="PointLight.h" />
     <ClInclude Include="RandomTranslate.h" />
     <ClInclude Include="ReflectorLight.h" />
     <ClInclude Include="Rotate.h" />
@@ -180,7 +183,11 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Subject.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Transformation.h" />
     <ClInclude Include="Translate.h" />
   </ItemGroup>

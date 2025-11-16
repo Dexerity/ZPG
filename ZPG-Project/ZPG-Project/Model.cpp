@@ -83,6 +83,36 @@ Model::Model(const char* name)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 }
 
+Model::Model(const float* points, int vertexCount, bool uv) {
+    int floatsC = 0;
+
+    if (uv)
+        floatsC = 8;
+    else
+        floatsC = 6;
+
+    VBO = 0;
+    glGenBuffers(1, &VBO); // generate the VBO
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexCount * floatsC, points, GL_STATIC_DRAW);
+
+    VAO = 0;
+    glGenVertexArrays(1, &VAO); //generate the VAO
+    glBindVertexArray(VAO); //bind the VAO
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, floatsC * sizeof(float), NULL);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, floatsC * sizeof(float), (void*)(3 * sizeof(float)));
+
+    if (uv) {
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, floatsC * sizeof(float), (void*)(6 * sizeof(float)));
+    }
+
+    this->vertexCount = vertexCount;
+}
+
 Model::~Model()
 {
 	glDeleteVertexArrays(1, &this->VAO);
