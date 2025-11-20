@@ -38,5 +38,6 @@ private:
 	static int activeScene;
 	static bool mouseClicked[3];
 	static bool deleteClicked;
+	static bool cClicked;
 };
 

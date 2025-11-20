@@ -251,9 +251,9 @@ void Application::createScenes()
 	std::vector<std::string> skySides = {
 	"Assets/Skybox/posx.jpg",
 	"Assets/Skybox/negx.jpg",
+	"Assets/Skybox/posy.jpg",
 	"Assets/Skybox/negy.jpg",
 	"Assets/Skybox/posz.jpg",
-	"Assets/Skybox/posy.jpg",
 	"Assets/Skybox/negz.jpg"
 	};
 	Skybox* skybox1 = new Skybox(skySides);
@@ -286,6 +286,8 @@ void Application::createScenes()
 	lights3.push_back(new DirectionLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1, glm::vec3(0.3f, -1.0f, 0.0f)));
 
 	scenes.push_back(new Scene(this->controller, cam3, lights3, skybox1));
+
+	scenes[1]->addAObject(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.f)));
 
 	std::vector<DrawableObject*> dObjects3;
 

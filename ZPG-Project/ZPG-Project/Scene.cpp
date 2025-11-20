@@ -152,4 +152,50 @@ void Scene::drawObjects()
 
 		this->controller->resetClicks();
 	}
+
+	if (this->controller->wasClicked(GLFW_KEY_C))
+	{
+		std::cout << "Creating object" << std::endl;
+
+		GLubyte color[4];
+		GLfloat depth;
+		GLuint index;
+
+		GLint x = (GLint)this->mouseX;
+		GLint y = (GLint)this->mouseY;
+
+		int newy = this->windowSize.y - y;
+
+		glEnable(GL_STENCIL_TEST);
+		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+		glDisable(GL_STENCIL_TEST);
+
+		glm::vec3 screenCoord = glm::vec3((float)x, (float)newy, depth);
+
+		glm::mat4 view = camera->getCamera();
+		glm::mat4 projection = camera->getProjectionMatrix();
+		glm::vec4 viewPort = glm::vec4(0, 0, this->windowSize.x, this->windowSize.y);
+		glm::vec3 worldPos = glm::unProject(screenCoord, view, projection, viewPort);
+
+		Transformation *transform = new Transformation();
+		transform->transforms.push_back(new Translate(worldPos));
+		transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
+
+		DrawableObject dObject = *this->addedObject;
+		dObject.addTransform(transform);
+
+		vector<DrawableObject*> newObjects = this->dObjects;
+		newObjects.push_back(&dObject);
+
+		this->addDrawableObjects(newObjects);
+
+		this->controller->resetClicks();
+	}
+}
+
+void Scene::addAObject(DrawableObject* object)
+{
+	this->addedObject = object;
 }

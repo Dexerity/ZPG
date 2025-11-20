@@ -7,6 +7,8 @@
 #include "Controller.h"
 #include "Skybox.h"
 
+#include "Scale.h"
+
 class Scene
 {
 public:
@@ -14,6 +16,7 @@ public:
 	~Scene();
 	void addDrawableObjects(std::vector<DrawableObject*> dObjects);
 	void drawObjects();
+	void addAObject(DrawableObject *object);
 	
 private:
 	std::vector<DrawableObject*> dObjects;
@@ -21,6 +24,7 @@ private:
 	std::vector<Light*> lights;
 	Controller* controller;
 	Skybox* skybox;
+	DrawableObject* addedObject = nullptr;
 	double mouseX = 0;
 	double mouseY = 0;
 	double scrollY = 0;
