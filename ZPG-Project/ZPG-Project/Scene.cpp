@@ -2,12 +2,14 @@
 #include <unordered_map>
 #include <string>
 
-Scene::Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox)
+Scene::Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox, int sceneState)
 {
+	this->sceneState = sceneState;
 	this->camera = camera;
 	this->controller = controller;
 	this->lights = lights;
 	this->skybox = skybox;
+	this->timer = 8000;
 }
 
 Scene::~Scene()
@@ -40,6 +42,8 @@ void Scene::addDrawableObjects(std::vector<DrawableObject*> dObjects)
 	{
 		object->addSubjects(this->camera, this->lights);
 		object->setID(id++);
+		if(flashlight)
+			object->setFlashlight(this->flashlight);
 	}
 }
 
@@ -51,6 +55,9 @@ void Scene::drawObjects()
 		this->mouseY = this->controller->getMouseY();
 		camera->updateCamera(this->mouseX, this->mouseY);
 		camera->setPosition(this->controller->getMovementVector());
+
+		if(flashlight)
+			this->flashlight->updateDirection(camera->getFront());
 	}
 
 	if (this->controller->getWindowSize() != this->windowSize)
@@ -90,16 +97,18 @@ void Scene::drawObjects()
 		object->Notify(SubjectType::LIGHT);
 	}
 
-
-	if (this->selectedObjectIndex >= 0)
+	if (this->sceneState == 0)
 	{
-		dObjects[this->selectedObjectIndex]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
-		if (this->controller->wasClicked(GLFW_KEY_DELETE))
+		if (this->selectedObjectIndex >= 0)
 		{
-			delete dObjects[this->selectedObjectIndex];
-			dObjects.erase(dObjects.begin() + this->selectedObjectIndex);
-			this->selectedObjectIndex = -1;
-			this->selectedObjectId = 0;
+			dObjects[this->selectedObjectIndex]->setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+			if (this->controller->wasClicked(GLFW_KEY_DELETE))
+			{
+				delete dObjects[this->selectedObjectIndex];
+				dObjects.erase(dObjects.begin() + this->selectedObjectIndex);
+				this->selectedObjectIndex = -1;
+				this->selectedObjectId = 0;
+			}
 		}
 	}
 
@@ -129,16 +138,23 @@ void Scene::drawObjects()
 		{
 			this->selectedObjectIndex = this->selectedObjectId - 1;
 
-			/*if (dObjects.size() > 1 && this->selectedObjectIndex > 0) 
+			if (sceneState == 1)
 			{
-				delete dObjects[this->selectedObjectIndex];
-				dObjects.erase(dObjects.begin() + this->selectedObjectIndex);
-				this->selectedObjectIndex = -1;
-				this->selectedObjectId = 0;
-			}*/
+				if (dObjects[this->selectedObjectIndex]->objectType == "target")
+				{
+					delete dObjects[this->selectedObjectIndex];
+					dObjects.erase(dObjects.begin() + this->selectedObjectIndex);
+					this->selectedObjectIndex = -1;
+					this->selectedObjectId = 0;
+					this->score++;
+					this->timer += 500;
+					std::cout << "Score: " << this->score << " Time remaining: " << this->timer << std::endl;
+				}
+			}
 
 		}
-		else {
+		else 
+		{
 			this->selectedObjectId = 0;
 			this->selectedObjectIndex = -1;
 		}
@@ -183,19 +199,79 @@ void Scene::drawObjects()
 		transform->transforms.push_back(new Translate(worldPos));
 		transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
 
-		DrawableObject dObject = *this->addedObject;
-		dObject.addTransform(transform);
+		DrawableObject* dObject;
+
+		if(this->defTexture)
+			dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor, this->defTexture);
+		else
+			dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor);
+
+		dObject->addTransform(transform);
 
 		vector<DrawableObject*> newObjects = this->dObjects;
-		newObjects.push_back(&dObject);
+		newObjects.push_back(dObject);
 
 		this->addDrawableObjects(newObjects);
 
 		this->controller->resetClicks();
 	}
+
+	if (this->sceneState == 1)
+	{
+		timer--;
+		if (timer <= 0)
+		{
+			std::cout << "Game Over! Final Score: " << this->score << std::endl;
+			exit(0);
+		}
+
+		if (this->frameCount++ > 600)
+		{
+			this->frameCount = 0;
+
+			DrawableObject* dObject;
+
+			if (this->defTexture)
+				dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor, this->defTexture);
+			else
+				dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor);
+
+			if (this->dObjects.size() < 50)
+			{
+				vector<DrawableObject*> newObjects = this->dObjects;
+
+				Transformation* transform = new Transformation();
+				//transform->transforms.push_back(new Translate(glm::vec3((rand() % 60 - 30) / 10.0f, 0.5f, (rand() % 60 - 30))));
+
+				std::vector<glm::vec3> points;
+				points.clear();
+
+				for (int i = 0; i < 5; i++)
+					points.push_back(glm::vec3((rand() % 60 - 30), 0.5f, (rand() % 60 - 30)));
+
+				transform->transforms.push_back(new SetTraslate(points, 0.001f));
+				transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+
+				dObject->addTransform(transform);
+				dObject->objectType = "target";
+
+				newObjects.push_back(dObject);
+
+				this->addDrawableObjects(newObjects);
+			}
+		}
+	}
 }
 
-void Scene::addAObject(DrawableObject* object)
+void Scene::addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color, Texture* texture)
 {
-	this->addedObject = object;
+	this->defShaderProgram = shaderProgram;
+	this->defModel = model;
+	this->defColor = color;
+	this->defTexture = texture;
+}
+
+void Scene::setFlashlight(Flashlight* flashlight)
+{
+	this->flashlight = flashlight;
 }

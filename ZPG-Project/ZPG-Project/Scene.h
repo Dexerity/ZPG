@@ -6,25 +6,33 @@
 #include "Camera.h"
 #include "Controller.h"
 #include "Skybox.h"
+#include "Flashlight.h"
 
 #include "Scale.h"
+
+#include "SetTraslate.h"
 
 class Scene
 {
 public:
-	Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox = nullptr);
+	Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox = nullptr, int sceneState = 0);
 	~Scene();
 	void addDrawableObjects(std::vector<DrawableObject*> dObjects);
 	void drawObjects();
-	void addAObject(DrawableObject *object);
-	
+	void addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color, Texture* texture = nullptr);
+	void setFlashlight(Flashlight* flashlight);
 private:
+	int sceneState = 0;
+	int score = 0;
 	std::vector<DrawableObject*> dObjects;
 	Camera* camera;
 	std::vector<Light*> lights;
 	Controller* controller;
 	Skybox* skybox;
-	DrawableObject* addedObject = nullptr;
+	ShaderProgram* defShaderProgram;
+	Model* defModel;
+	glm::vec3 defColor;
+	Texture* defTexture;
 	double mouseX = 0;
 	double mouseY = 0;
 	double scrollY = 0;
@@ -32,5 +40,8 @@ private:
 	glm::vec2 windowSize = glm::vec2(1600, 900);
 	int selectedObjectId = 0;
 	int selectedObjectIndex = -1;
+	int frameCount = 0;
+	Flashlight* flashlight = nullptr;
+	int timer = 0;
 };
 

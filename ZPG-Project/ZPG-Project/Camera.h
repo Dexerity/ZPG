@@ -18,7 +18,7 @@ public:
 	void setPosition(glm::vec3 position);
 	glm::vec3 getCameraPosition();
 	glm::mat4 getProjectionMatrix();
-
+	glm::vec3 getFront();
 
 private:
 	glm::mat4 projectionMatrix;

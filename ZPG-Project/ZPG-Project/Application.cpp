@@ -196,10 +196,13 @@ void Application::createModels()
     //models.push_back(new Model(bushes, sizeof(bushes) / sizeof(float)));         // 7: bushes
     //models.push_back(new Model(suziFlat, sizeof(suziFlat) / sizeof(float)));     // 8: suziFlat
     //models.push_back(new Model(suziSmooth, sizeof(suziSmooth) / sizeof(float))); // 9: suziSmooth
-	models.push_back(new Model("Car.obj"));
+	models.push_back(new Model("Cottage_obj.obj"));
 	models.push_back(new Model(texPlain, sizeof(texPlain) / sizeof(float) / 8, true));
 	models.push_back(new Model("teren.obj"));
 	models.push_back(new Model("Lowpoly_tree_sample.obj"));
+	models.push_back(new Model("forrest.obj"));
+	models.push_back(new Model("eyeball.obj"));
+	models.push_back(new Model("13913_Sun_v2_l3.obj"));
 }
 
 void Application::createScenes()
@@ -264,17 +267,21 @@ void Application::createScenes()
 
 	dObjects2.push_back(new DrawableObject(models[1], shaderPrograms[3], glm::vec3(-1.0f, -1.0f, -1.0f), new Texture("Assets/wooden_fence.png")));
 
-	dObjects2.push_back(new DrawableObject(models[0], shaderPrograms[3], glm::vec3(1.0f, 1.0f, 1.0f)));
-	dObjects2.push_back(new DrawableObject(models[0], shaderPrograms[3], glm::vec3(1.0f, 1.0f, 1.0f)));
+	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
+	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
+
+	glm::mat4 customMat = glm::mat4(1.0f);
+	customMat[3][3] = 20.0f;
 
 	transform = new Transformation();
+	transform->transforms.push_back(new CustomTransform(customMat));
 	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.0f)));
-	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.04f, 0.04f, 0.04f)));
 	dObjects2[1]->addTransform(transform);
 
 	transform = new Transformation();
 	transform->transforms.push_back(new Translate(glm::vec3(0.5f, 0.0f, 0.0f)));
-	transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.04f, 0.04f, 0.04f)));
 	dObjects2[2]->addTransform(transform);
 
 	scenes[0]->addDrawableObjects(dObjects2);
@@ -285,32 +292,177 @@ void Application::createScenes()
 	std::vector<Light*> lights3;
 	lights3.push_back(new DirectionLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1, glm::vec3(0.3f, -1.0f, 0.0f)));
 
-	scenes.push_back(new Scene(this->controller, cam3, lights3, skybox1));
+	scenes.push_back(new Scene(this->controller, cam3, lights3, skybox1, 1));
 
-	scenes[1]->addAObject(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(1.f)));
+	scenes[1]->addAObject(shaderPrograms[2], models[5], glm::vec3(-1.f), new Texture("Assets/Eye_D.jpg"));
 
 	std::vector<DrawableObject*> dObjects3;
 
 	dObjects3.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(-1.f), new Texture("Assets/grass.png")));
+	dObjects2[0]->addMaterial(new Material(0.1f, 1.0f, 1.0f, 1.0f));
 
 
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < 16; i++)
 	{
 		transform = new Transformation();
-		dObjects3.push_back(new DrawableObject(models[3], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+		dObjects3.push_back(new DrawableObject(models[4], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+		dObjects3[i + 1]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 1.0f));
 
 		//1,25
 
-		transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
-		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
-		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
-		transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
+		transform->transforms.push_back(new Translate(glm::vec3(-40.0f, 0.0f, 40.0f)));
+		transform->transforms.push_back(new Translate(glm::vec3((i % 4) * 20.0f, 0.0f, (i / 4) * -20.0f)));
+		//transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+		transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
 		dObjects3[i + 1]->addTransform(transform);
 	}
+
+	/*transform = new Transformation();
+	transform->transforms.push_back(new Scale(glm::vec3(0.08f, 0.08f, 0.08f)));
+
+	dObjects3.push_back(new DrawableObject(models[4], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+	dObjects3[1]->addTransform(transform);*/
 
 	scenes[1]->addDrawableObjects(dObjects3);
 
 	////-------------------------------
+
+	Camera* cam4 = new Camera();
+	std::vector<Light*> lights4;
+	lights4.push_back(new Light(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
+	lights4[0]->k_c = 1.0f;
+	lights4[0]->k_l = 0.001f;
+	lights4[0]->k_q = 0.000001f;
+
+	std::vector<std::string> skySides2 = {
+		"Assets/SkyboxSpace/sky.jpg",
+		"Assets/SkyboxSpace/sky.jpg",
+		"Assets/SkyboxSpace/sky.jpg",
+		"Assets/SkyboxSpace/sky.jpg",
+		"Assets/SkyboxSpace/sky.jpg",
+		"Assets/SkyboxSpace/sky.jpg"
+	};
+	Skybox* skybox2 = new Skybox(skySides2);
+
+	scenes.push_back(new Scene(this->controller, cam4, lights4, skybox2, 0));
+
+	std::vector<DrawableObject*> dObjects4;
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2K_sun.jpg")));
+	dObjects4[0]->addMaterial(new Material(1.0f, 0.0f, 0.0f, 1.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2K_mercury.jpg")));
+	dObjects4[1]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2K_venus_surface.jpg")));
+	dObjects4[2]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_earth_daymap.jpg")));
+	dObjects4[3]->addMaterial(new Material(0.1f, 1.0f, 0.3f, 32.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_moon.jpg")));
+	dObjects4[4]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_mars.jpg")));
+	dObjects4[5]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_jupiter.jpg")));
+	dObjects4[6]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_saturn.jpg")));
+	dObjects4[7]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_uranus.jpg")));
+	dObjects4[8]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_neptune.jpg")));
+	dObjects4[9]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+
+	//SUN
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 13.52f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.002f, 0.002f, 0.002f)));
+	dObjects4[0]->addTransform(transform);
+
+	//MERCURY
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.415f));
+	transform->transforms.push_back(new Translate(glm::vec3(3.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 6.22f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0004f, 0.0004f, 0.0004f)));
+	dObjects4[1]->addTransform(transform);
+
+	//VENUS
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.162f));
+	transform->transforms.push_back(new Translate(glm::vec3(5.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 1.5f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0009f, 0.0009f, 0.0009f)));
+	dObjects4[2]->addTransform(transform);
+
+	//EARTH
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.1f));
+	transform->transforms.push_back(new Translate(glm::vec3(10.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 365.0f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0008f, 0.0008f, 0.0008f)));
+	dObjects4[3]->addTransform(transform);
+
+	//MOON
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.1f));
+	transform->transforms.push_back(new Translate(glm::vec3(10.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 13.52f));
+	transform->transforms.push_back(new Translate(glm::vec3(1.5f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.01f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0002f, 0.0002f, 0.0002f)));
+	dObjects4[4]->addTransform(transform);
+
+	//MARS
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.053f));
+	transform->transforms.push_back(new Translate(glm::vec3(15.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 350.4f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0007f, 0.0007f, 0.0007f)));
+	dObjects4[5]->addTransform(transform);
+
+	//JUPITER
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.0084f));
+	transform->transforms.push_back(new Translate(glm::vec3(25.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 876.0f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.007f, 0.007f, 0.007f)));
+	dObjects4[6]->addTransform(transform);
+
+	//SATURN
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.0034f));
+	transform->transforms.push_back(new Translate(glm::vec3(35.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 796.3f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.006f, 0.006f, 0.006f)));
+	dObjects4[7]->addTransform(transform);
+
+	//URANUS
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.0014f));
+	transform->transforms.push_back(new Translate(glm::vec3(45.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 515.3f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0025f, 0.0025f, 0.0025f)));
+	dObjects4[8]->addTransform(transform);
+
+	//NEPTUNE
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.0008f));
+	transform->transforms.push_back(new Translate(glm::vec3(55.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 547.5f));
+	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.0024f, 0.0024f, 0.0024f)));
+	dObjects4[9]->addTransform(transform);
+
+
+	scenes[2]->addDrawableObjects(dObjects4);
+
+
+
 
 	//Camera* cam4 = new Camera();
 	//std::vector<Light*> lights4;

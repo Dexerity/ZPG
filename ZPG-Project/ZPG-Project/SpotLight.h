@@ -9,6 +9,7 @@ public:
 	glm::vec3 getDirection();
 	float getAlpha();
 	int getType();
+
 private:
 	int lightType = 2;
 	glm::vec3 direction;
