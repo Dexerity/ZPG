@@ -196,13 +196,17 @@ void Application::createModels()
     //models.push_back(new Model(bushes, sizeof(bushes) / sizeof(float)));         // 7: bushes
     //models.push_back(new Model(suziFlat, sizeof(suziFlat) / sizeof(float)));     // 8: suziFlat
     //models.push_back(new Model(suziSmooth, sizeof(suziSmooth) / sizeof(float))); // 9: suziSmooth
-	models.push_back(new Model("Cottage_obj.obj"));
+	//models.push_back(new Model("Cottage_obj.obj"));
 	models.push_back(new Model(texPlain, sizeof(texPlain) / sizeof(float) / 8, true));
 	models.push_back(new Model("teren.obj"));
+	models.push_back(new Model("teren.obj"));
+	models.push_back(new Model("teren.obj"));
 	models.push_back(new Model("Lowpoly_tree_sample.obj"));
-	models.push_back(new Model("forrest.obj"));
-	models.push_back(new Model("eyeball.obj"));
+	models.push_back(new Model("Lowpoly_tree_sample.obj"));
+	//models.push_back(new Model("forrest.obj"));
+	//models.push_back(new Model("eyeball.obj"));
 	models.push_back(new Model("13913_Sun_v2_l3.obj"));
+	models.push_back(new Model("login.obj"));
 }
 
 void Application::createScenes()
@@ -367,6 +371,8 @@ void Application::createScenes()
 	dObjects4[8]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
 	dObjects4.push_back(new DrawableObject(models[6], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_neptune.jpg")));
 	dObjects4[9]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
+	dObjects4.push_back(new DrawableObject(models[7], shaderPrograms[3], glm::vec3(-1.f), new Texture("Assets/2k_neptune.jpg")));
+	dObjects4[9]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 4.0f));
 
 	//SUN
 	transform = new Transformation();
@@ -412,6 +418,17 @@ void Application::createScenes()
 	transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
 	transform->transforms.push_back(new Scale(glm::vec3(0.0002f, 0.0002f, 0.0002f)));
 	dObjects4[4]->addTransform(transform);
+
+	//LOGIN
+	transform = new Transformation();
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.1f));
+	transform->transforms.push_back(new Translate(glm::vec3(10.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), -13.52f));
+	transform->transforms.push_back(new Translate(glm::vec3(2.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new DynamicRotate(glm::vec3(0.0f, 1.0f, 0.0f), 0.01f));
+	//transform->transforms.push_back(new Rotate(glm::vec3(-1.0f, 0.0f, 0.0f), 90.0f));
+	transform->transforms.push_back(new Scale(glm::vec3(0.2f, 0.2f, 0.2f)));
+	dObjects4[10]->addTransform(transform);
 
 	//MARS
 	transform = new Transformation();
