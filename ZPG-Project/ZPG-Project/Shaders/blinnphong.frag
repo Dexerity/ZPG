@@ -28,6 +28,11 @@ uniform int lightsCount;
 
 uniform sampler2D textureUnitID;
 
+uniform float ra = 0.1;
+uniform float rd = 1.0;
+uniform float rs = 1.0;
+uniform float h = 32;
+
 out vec4 fragColor;
 
 void main(void) {
@@ -41,7 +46,7 @@ void main(void) {
     vec3 norm = normalize(worldNormal);
     vec3 viewDir = normalize(cameraPosition - worldPosition);
 
-    vec3 finalLighting = vec3(0.1);
+    vec3 finalLighting = vec3(1.0) * ra;
 
     for (int i = 0; i < lightsCount; i++) {
 
@@ -59,11 +64,11 @@ void main(void) {
         }
 
         float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lights[i].color * lights[i].intensity;
+        vec3 diffuse = rd * diff * lights[i].color * lights[i].intensity;
 
         vec3 halfDir = normalize(lightDir + viewDir);
-        float spec = pow(max(dot(norm, halfDir), 0.0), 32.0);
-        vec3 specular = spec * vec3(1.0);
+        float spec = pow(max(dot(norm, halfDir), 0.0), h);
+        vec3 specular = rs * spec * vec3(1.0);
 
         if (lights[i].type == 2) {
             float dotLF = dot(normalize(-lightVector), normalize(lights[i].direction));

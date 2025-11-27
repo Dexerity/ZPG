@@ -77,7 +77,7 @@ void Controller::key_callback(GLFWwindow* window, int key, int scancode, int act
 		cClicked = true;
 
 
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }
 
 void Controller::window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback \n"); }
@@ -101,7 +101,7 @@ void Controller::cursor_callback(GLFWwindow* window, double x, double y)
 void Controller::button_callback(GLFWwindow* window, int button, int action, int mode) {
 	if (action == GLFW_PRESS) 
 	{
-		printf("button_callback [%d,%d,%d]\n", button, action, mode);
+		//printf("button_callback [%d,%d,%d]\n", button, action, mode);
 		if (button >= 0 && button < 3) 
 		{
 			Controller::mouseClicked[button] = true;

@@ -23,6 +23,10 @@ public:
 	glm::vec3 getDirection();
 	float getAlpha();
 
+	float k_c = 1.0f;
+	float k_l = 3.0f;
+	float k_q = 0.3f;
+
 protected:
 	glm::vec3 position;
 	glm::vec3 color;

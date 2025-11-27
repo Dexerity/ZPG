@@ -1,0 +1,6 @@
+Pro správné vykreslování objektů, používáme homogenní souřadnice (x,y,z,w) které umožňují perspektivní dělení. Po vynásobení transformačními maticemi proběhne homogenizace: 
+x' = x / w, 
+y' = y / w, 
+z' = z / w.
+
+Přidáním jednotkové matice s prvkem[3][3] nastaveným na 20, zkontrolujeme zda perspektivní dělení probíhá správně. pokud se objekt pouze transformuje a nerozbije, tak víme že zpracování transformací probíhá v pořádku.

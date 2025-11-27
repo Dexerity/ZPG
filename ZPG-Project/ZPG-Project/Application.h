@@ -15,6 +15,7 @@
 #include "Rotate.h"
 #include "Scale.h"
 #include "DynamicRotate.h"
+#include "CustomTransform.h"
 
 #include "Models/sphere.h"
 #include "Models/tree.h"

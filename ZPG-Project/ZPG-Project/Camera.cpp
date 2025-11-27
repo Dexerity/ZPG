@@ -82,3 +82,8 @@ glm::mat4 Camera::getProjectionMatrix()
 {
 	return this->projectionMatrix;
 }
+
+glm::vec3 Camera::getFront()
+{
+	return this->cameraAngle;
+}
