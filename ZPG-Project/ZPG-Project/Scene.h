@@ -11,6 +11,8 @@
 #include "Scale.h"
 
 #include "SetTraslate.h"
+#include "BezierSplineTransform.h"
+#include "Rotate.h"
 
 class Scene
 {
@@ -43,5 +45,7 @@ private:
 	int frameCount = 0;
 	Flashlight* flashlight = nullptr;
 	int timer = 0;
+	BezierSplineTransform* bezierSpline;
+	DrawableObject* bezierObject;
 };
 

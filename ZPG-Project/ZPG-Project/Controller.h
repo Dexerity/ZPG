@@ -39,5 +39,6 @@ private:
 	static bool mouseClicked[3];
 	static bool deleteClicked;
 	static bool cClicked;
+	static bool bClicked;
 };
 

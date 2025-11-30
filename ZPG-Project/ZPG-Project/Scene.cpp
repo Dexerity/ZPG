@@ -10,6 +10,8 @@ Scene::Scene(Controller* controller, Camera* camera, std::vector<Light*> lights,
 	this->lights = lights;
 	this->skybox = skybox;
 	this->timer = 8000;
+
+	bezierSpline = new BezierSplineTransform();
 }
 
 Scene::~Scene()
@@ -126,7 +128,6 @@ void Scene::drawObjects()
 		glEnable(GL_STENCIL_TEST);
 		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 		glDisable(GL_STENCIL_TEST);
 
 		this->selectedObjectId = (int)index;
@@ -159,17 +160,10 @@ void Scene::drawObjects()
 			this->selectedObjectIndex = -1;
 		}
 
-		glm::vec3 screenCoord = glm::vec3((float)x, (float)newy, depth);
-
-		glm::mat4 view = camera->getCamera();
-		glm::mat4 projection = camera->getProjectionMatrix();
-		glm::vec4 viewPort = glm::vec4(0, 0, this->windowSize.x, this->windowSize.y);
-		glm::vec3 worldPos = glm::unProject(screenCoord, view, projection, viewPort);
-
 		this->controller->resetClicks();
 	}
 
-	if (this->controller->wasClicked(GLFW_KEY_C))
+	if (this->controller->wasClicked(GLFW_KEY_C) || this->controller->wasClicked(GLFW_KEY_B))
 	{
 		std::cout << "Creating object" << std::endl;
 
@@ -185,7 +179,6 @@ void Scene::drawObjects()
 		glEnable(GL_STENCIL_TEST);
 		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 		glDisable(GL_STENCIL_TEST);
 
 		glm::vec3 screenCoord = glm::vec3((float)x, (float)newy, depth);
@@ -195,23 +188,38 @@ void Scene::drawObjects()
 		glm::vec4 viewPort = glm::vec4(0, 0, this->windowSize.x, this->windowSize.y);
 		glm::vec3 worldPos = glm::unProject(screenCoord, view, projection, viewPort);
 
-		Transformation *transform = new Transformation();
-		transform->transforms.push_back(new Translate(worldPos));
-		transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
+		if(this->controller->wasClicked(GLFW_KEY_C))
+		{
+			Transformation* transform = new Transformation();
+			transform->transforms.push_back(new Translate(worldPos));
+			transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
 
-		DrawableObject* dObject;
+			DrawableObject* dObject;
 
-		if(this->defTexture)
-			dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor, this->defTexture);
-		else
-			dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor);
+			if (this->defTexture)
+				dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor, this->defTexture);
+			else
+				dObject = new DrawableObject(this->defModel, this->defShaderProgram, this->defColor);
 
-		dObject->addTransform(transform);
+			dObject->addTransform(transform);
 
-		vector<DrawableObject*> newObjects = this->dObjects;
-		newObjects.push_back(dObject);
+			vector<DrawableObject*> newObjects = this->dObjects;
+			newObjects.push_back(dObject);
 
-		this->addDrawableObjects(newObjects);
+			this->addDrawableObjects(newObjects);
+		}
+		else if(this->controller->wasClicked(GLFW_KEY_B))
+		{
+			bezierSpline->addPoint(worldPos);
+
+			Transformation* bezTrans = new Transformation();
+			
+			bezTrans->transforms.push_back(bezierSpline);
+			bezTrans->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), 90));
+			bezTrans->transforms.push_back(new Scale(glm::vec3(0.01f, 0.01f, 0.01f)));
+
+			dObjects[1]->addTransform(bezTrans);
+		}
 
 		this->controller->resetClicks();
 	}

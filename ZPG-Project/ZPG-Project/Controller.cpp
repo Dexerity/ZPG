@@ -13,6 +13,7 @@ double Controller::scrollY = 0;
 bool Controller::mouseClicked[3] = { false, false, false };
 bool Controller::deleteClicked = false;
 bool Controller::cClicked = false;
+bool Controller::bClicked = false;
 
 Controller::Controller(GLFWwindow* window)
 {
@@ -76,6 +77,9 @@ void Controller::key_callback(GLFWwindow* window, int key, int scancode, int act
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
 		cClicked = true;
 
+	if (key == GLFW_KEY_B && action == GLFW_PRESS)
+		bClicked = true;
+
 
 	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }
@@ -126,6 +130,9 @@ bool Controller::wasClicked(int button)
 	if (button == GLFW_KEY_C)
 		return cClicked;
 
+	if (button == GLFW_KEY_B)
+		return bClicked;
+
 	return false;
 }
 
@@ -136,4 +143,5 @@ void Controller::resetClicks()
 	mouseClicked[2] = false;
 	deleteClicked = false;
 	cClicked = false;
+	bClicked = false;
 }

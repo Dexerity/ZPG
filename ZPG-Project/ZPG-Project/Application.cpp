@@ -200,7 +200,7 @@ void Application::createModels()
 	models.push_back(new Model(texPlain, sizeof(texPlain) / sizeof(float) / 8, true));
 	models.push_back(new Model("teren.obj"));
 	models.push_back(new Model("teren.obj"));
-	models.push_back(new Model("teren.obj"));
+	models.push_back(new Model("formula1.obj"));
 	models.push_back(new Model("Lowpoly_tree_sample.obj"));
 	models.push_back(new Model("Lowpoly_tree_sample.obj"));
 	//models.push_back(new Model("forrest.obj"));
@@ -253,7 +253,7 @@ void Application::createScenes()
 	Camera* cam2 = new Camera();
 	std::vector<Light*> lights2;
 	lights2.push_back(new Light(glm::vec3(0.3f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
-	//lights2.push_back(new DirectionLight(glm::vec3(0.5f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f, glm::vec3(0.0f, -1.0f, 3.0f)));
+	//lights2.push_back(new DirectionLight(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f, glm::vec3(0.0f, -1.0f, 0.0f)));
 	
 	std::vector<std::string> skySides = {
 	"Assets/Skybox/posx.jpg",
@@ -269,24 +269,30 @@ void Application::createScenes()
 
 	std::vector<DrawableObject*> dObjects2;
 
-	dObjects2.push_back(new DrawableObject(models[1], shaderPrograms[3], glm::vec3(-1.0f, -1.0f, -1.0f), new Texture("Assets/wooden_fence.png")));
+	dObjects2.push_back(new DrawableObject(models[0], shaderPrograms[3], glm::vec3(-1.0f, -1.0f, -1.0f), new Texture("Assets/racetrack.jpg")));
 
-	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
-	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
+	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(1.0f)));
+	dObjects2[1]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 1.0f));
+	//dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
 
 	glm::mat4 customMat = glm::mat4(1.0f);
 	customMat[3][3] = 20.0f;
 
 	transform = new Transformation();
-	transform->transforms.push_back(new CustomTransform(customMat));
-	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.0f)));
-	transform->transforms.push_back(new Scale(glm::vec3(0.04f, 0.04f, 0.04f)));
-	dObjects2[1]->addTransform(transform);
+	transform->transforms.push_back(new Scale(glm::vec3(2.0f, 2.0f, 2.0f)));
+	dObjects2[0]->addTransform(transform);
 
 	transform = new Transformation();
+	//transform->transforms.push_back(new CustomTransform(customMat));
+	//transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new BezierCurveTransform(glm::vec3(-1, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 0, -1), glm::vec3(1, 0, 0), 0.01));
+	transform->transforms.push_back(new Scale(glm::vec3(0.01f, 0.01f, 0.01f)));
+	dObjects2[1]->addTransform(transform);
+
+	/*transform = new Transformation();
 	transform->transforms.push_back(new Translate(glm::vec3(0.5f, 0.0f, 0.0f)));
 	transform->transforms.push_back(new Scale(glm::vec3(0.04f, 0.04f, 0.04f)));
-	dObjects2[2]->addTransform(transform);
+	dObjects2[2]->addTransform(transform);*/
 
 	scenes[0]->addDrawableObjects(dObjects2);
 

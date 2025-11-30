@@ -133,6 +133,8 @@
     <ClCompile Include="..\..\Libraries\tinyobjloader-1.0.6\tiny_obj_loader.cc" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ATransform.cpp" />
+    <ClCompile Include="BezierCurveTransform.cpp" />
+    <ClCompile Include="BezierSplineTransform.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
@@ -162,6 +164,8 @@
     <ClInclude Include="..\..\Libraries\tinyobjloader-1.0.6\tiny_obj_loader.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="ATransform.h" />
+    <ClInclude Include="BezierCurveTransform.h" />
+    <ClInclude Include="BezierSplineTransform.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CustomTransform.h" />
