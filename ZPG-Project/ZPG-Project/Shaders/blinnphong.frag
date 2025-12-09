@@ -35,8 +35,51 @@ uniform float h = 32;
 
 out vec4 fragColor;
 
-void main(void) {
+vec3 calculateLighting(vec3 norm, vec3 viewDir, vec3 lightDir, vec3 lightColor, float lightIntensity, float lightAtt)
+{
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = rd * diff * lightColor * lightIntensity;
 
+    vec3 halfDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(norm, halfDir), 0.0), h);
+    vec3 specular = rs * spec * vec3(1.0);
+
+    return (diffuse + specular) * lightAtt;
+}
+
+vec3 calculatePointLight(Light light, vec3 norm, vec3 viewDir, vec3 lightVector, float d)
+{
+    vec3 lightDir = normalize(lightVector);
+    float lightAtt = 1.0 / (light.k_c + light.k_l * d + light.k_q * d * d);
+
+    return calculateLighting(norm, viewDir, lightDir, light.color, light.intensity, lightAtt);
+}
+
+vec3 calculateDirectionalLight(Light light, vec3 norm, vec3 viewDir)
+{
+    vec3 lightDir = normalize(-light.direction);
+    float lightAtt = 1.0;
+    
+    return calculateLighting(norm, viewDir, lightDir, light.color, light.intensity, lightAtt);
+}
+
+vec3 calculateSpotLight(Light light, vec3 norm, vec3 viewDir, vec3 lightVector, float d)
+{
+    vec3 lightDir = normalize(lightVector);
+    
+    float lightAtt = 1.0 / (light.k_c + light.k_l * d + light.k_q * d * d);
+    
+    float dotLF = dot(normalize(-lightVector), normalize(light.direction));
+    float spotIntensity = 0.0;
+
+    if (dotLF > light.alpha) {
+        spotIntensity = clamp((dotLF - light.alpha) / (1.0 - light.alpha), 0.0, 1.0);
+    }
+    
+    return calculateLighting(norm, viewDir, lightDir, light.color, light.intensity, lightAtt) * spotIntensity;
+}
+
+void main(void) {
     vec3 color;
     if (objectColor.r < 0.0)
         color = texture(textureUnitID, texCoordinates).rgb;
@@ -47,40 +90,22 @@ void main(void) {
     vec3 viewDir = normalize(cameraPosition - worldPosition);
 
     vec3 finalLighting = vec3(1.0) * ra;
-
+    
     for (int i = 0; i < lightsCount; i++) {
-
         vec3 lightVector = lights[i].position - worldPosition;
         float d = length(lightVector);
-        float lightAtt = 1.0;
-        vec3 lightDir;
 
-        if (lights[i].type == 1) {
-            lightDir = normalize(-lights[i].direction);
+        if (lights[i].type == 1) 
+        {
+            finalLighting += calculateDirectionalLight(lights[i], norm, viewDir);
         }
-        else { // point & spot
-            lightDir = normalize(lightVector);
-            lightAtt = 1.0 / (lights[i].k_c + lights[i].k_l * d + lights[i].k_q * d * d);
+        else if (lights[i].type == 2) 
+        {
+            finalLighting += calculateSpotLight(lights[i], norm, viewDir, lightVector, d);
         }
-
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = rd * diff * lights[i].color * lights[i].intensity;
-
-        vec3 halfDir = normalize(lightDir + viewDir);
-        float spec = pow(max(dot(norm, halfDir), 0.0), h);
-        vec3 specular = rs * spec * vec3(1.0);
-
-        if (lights[i].type == 2) {
-            float dotLF = dot(normalize(-lightVector), normalize(lights[i].direction));
-            float spotIntensity = 0.0;
-
-            if (dotLF > lights[i].alpha)
-                spotIntensity = clamp((dotLF - lights[i].alpha) / (1.0 - lights[i].alpha), 0.0, 1.0);
-
-            finalLighting += (diffuse + specular) * lightAtt * spotIntensity;
-        }
-        else {
-            finalLighting += (diffuse + specular) * lightAtt;
+        else 
+        {
+            finalLighting += calculatePointLight(lights[i], norm, viewDir, lightVector, d);
         }
     }
 

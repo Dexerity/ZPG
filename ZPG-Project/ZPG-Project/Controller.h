@@ -40,5 +40,6 @@ private:
 	static bool deleteClicked;
 	static bool cClicked;
 	static bool bClicked;
+	static bool fClicked;
 };
 

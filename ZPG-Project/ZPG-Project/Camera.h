@@ -17,6 +17,7 @@ public:
 	void updateProjectionMatrix(int width, int height, double scrollOff);
 	void setPosition(glm::vec3 position);
 	glm::vec3 getCameraPosition();
+	glm::vec3 getCameraDir() { return cameraAngle; }
 	glm::mat4 getProjectionMatrix();
 	glm::vec3 getFront();
 

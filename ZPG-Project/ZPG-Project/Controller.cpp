@@ -14,6 +14,7 @@ bool Controller::mouseClicked[3] = { false, false, false };
 bool Controller::deleteClicked = false;
 bool Controller::cClicked = false;
 bool Controller::bClicked = false;
+bool Controller::fClicked = false;
 
 Controller::Controller(GLFWwindow* window)
 {
@@ -80,6 +81,9 @@ void Controller::key_callback(GLFWwindow* window, int key, int scancode, int act
 	if (key == GLFW_KEY_B && action == GLFW_PRESS)
 		bClicked = true;
 
+	if (key == GLFW_KEY_F && action == GLFW_PRESS)
+		fClicked = true;
+
 
 	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 }
@@ -133,6 +137,9 @@ bool Controller::wasClicked(int button)
 	if (button == GLFW_KEY_B)
 		return bClicked;
 
+	if (button == GLFW_KEY_F)
+		return fClicked;
+
 	return false;
 }
 
@@ -144,4 +151,5 @@ void Controller::resetClicks()
 	deleteClicked = false;
 	cClicked = false;
 	bClicked = false;
+	fClicked = false;
 }

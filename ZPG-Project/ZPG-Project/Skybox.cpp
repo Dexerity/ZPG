@@ -48,19 +48,19 @@ Skybox::Skybox(vector<string> sides) {
     shaderProgram = new ShaderProgram(*shader);
 
     VBO = 0;
-    glGenBuffers(1, &VBO); // generate the VBO
+    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(skycube), skycube, GL_STATIC_DRAW);
 
     VAO = 0;
-    glGenVertexArrays(1, &VAO); //generate the VAO
-    glBindVertexArray(VAO); //bind the VAO
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glEnableVertexAttribArray(0); //enable vertex attributes
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
 
 
-    int text_width, text_height, channels;
+    int t_width, t_height, channels;
     stbi_set_flip_vertically_on_load(false);
 
     glActiveTexture(GL_TEXTURE0);
@@ -68,12 +68,9 @@ Skybox::Skybox(vector<string> sides) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
     for (int i = 0; i < sides.size(); i++) {
-        unsigned char* data = stbi_load(sides[i].c_str(), &text_width, &text_height, &channels, 4);
+        unsigned char* data = stbi_load(sides[i].c_str(), &t_width, &t_height, &channels, 0);
 
-        if (!data)
-            cerr << "Error loading skybox texture: " << sides[i] << endl;
-
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, text_width, text_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, t_width, t_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         stbi_image_free(data);
     }
 

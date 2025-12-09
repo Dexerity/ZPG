@@ -50,6 +50,13 @@ void DrawableObject::DrawObject()
 		shaderProgram->setUniform("rs", mat.z);
 		shaderProgram->setUniform("h", h);
 	}
+	else
+	{
+		shaderProgram->setUniform("ra", 0.1f);
+		shaderProgram->setUniform("rd", 1.0f);
+		shaderProgram->setUniform("rs", 1.0f);
+		shaderProgram->setUniform("h", 32);
+	}
 	
 
 	model->drawModel();
@@ -71,6 +78,7 @@ void DrawableObject::Notify(enum SubjectType type)
 		if (flashlight)
 		{
 			this->flashlight->updatePosition(camera->getCameraPosition());
+			this->flashlight->updateDirection(camera->getCameraDir());
 			Notify(SubjectType::LIGHT);
 		}
 	}
@@ -117,11 +125,21 @@ void DrawableObject::Notify(enum SubjectType type)
 			std::string lightIntensity = "lights[" + std::to_string(i) + "].intensity";
 			std::string lightDirection = "lights[" + std::to_string(i) + "].direction";
 			std::string lightAlpha = "lights[" + std::to_string(i) + "].alpha";
-			shaderProgram->setUniform(lightType, 1);
+			std::string l_k_l = "lights[" + std::to_string(i) + "].k_l";
+			std::string l_k_q = "lights[" + std::to_string(i) + "].k_q";
+			std::string l_k_c = "lights[" + std::to_string(i) + "].k_c";
+			shaderProgram->setUniform(lightType, flashlight->getType());
 			shaderProgram->setUniform(lightPos, flashlight->getPosition());
-			shaderProgram->setUniform(lightColor, flashlight->getColor());
 			shaderProgram->setUniform(lightIntensity, flashlight->getIntensity());
+			if(flashlight->isActive == true)
+				shaderProgram->setUniform(lightColor, flashlight->getColor());
+			else
+				shaderProgram->setUniform(lightColor, glm::vec3(0.0f));
 			shaderProgram->setUniform(lightDirection, flashlight->getDirection());
+			shaderProgram->setUniform(lightAlpha, flashlight->getAlpha());
+			shaderProgram->setUniform(l_k_l, flashlight->k_l);
+			shaderProgram->setUniform(l_k_q, flashlight->k_q);
+			shaderProgram->setUniform(l_k_c, flashlight->k_c);
 		}
 	}
 	

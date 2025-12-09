@@ -43,9 +43,20 @@ void Scene::addDrawableObjects(std::vector<DrawableObject*> dObjects)
 	for (DrawableObject* object : dObjects)
 	{
 		object->addSubjects(this->camera, this->lights);
-		object->setID(id++);
+		if(id < 255)
+			object->setID(id++);
 		if(flashlight)
 			object->setFlashlight(this->flashlight);
+	}
+}
+
+void Scene::reIndex()
+{
+	int id = 1;
+	for (DrawableObject* object : dObjects)
+	{
+		if (id < 255)
+			object->setID(id++);
 	}
 }
 
@@ -84,7 +95,6 @@ void Scene::drawObjects()
 		object->DrawObject();
 	}
 
-
 	if (skybox)
 		skybox->draw(camera->getCamera(), camera->getProjectionMatrix());
 
@@ -110,8 +120,16 @@ void Scene::drawObjects()
 				dObjects.erase(dObjects.begin() + this->selectedObjectIndex);
 				this->selectedObjectIndex = -1;
 				this->selectedObjectId = 0;
+
+				reIndex();
 			}
 		}
+	}
+
+	if (this->flashlight != nullptr && this->controller->wasClicked(GLFW_KEY_F))
+	{
+		this->flashlight->isActive = !this->flashlight->isActive;
+		this->controller->resetClicks();
 	}
 
 	if (this->controller->wasClicked(GLFW_MOUSE_BUTTON_LEFT))
@@ -128,7 +146,13 @@ void Scene::drawObjects()
 		glEnable(GL_STENCIL_TEST);
 		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 		glDisable(GL_STENCIL_TEST);
+
+		if (depth >= 0.9999f)
+			index = 0;
+
+		std::cout << "ID: " << index << std::endl;
 
 		this->selectedObjectId = (int)index;
 
@@ -179,7 +203,11 @@ void Scene::drawObjects()
 		glEnable(GL_STENCIL_TEST);
 		glReadPixels(x, newy, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 		glReadPixels(x, newy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+		glReadPixels(x, newy, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 		glDisable(GL_STENCIL_TEST);
+
+		if (depth >= 0.9999f)
+			index = 0;
 
 		glm::vec3 screenCoord = glm::vec3((float)x, (float)newy, depth);
 
@@ -188,11 +216,16 @@ void Scene::drawObjects()
 		glm::vec4 viewPort = glm::vec4(0, 0, this->windowSize.x, this->windowSize.y);
 		glm::vec3 worldPos = glm::unProject(screenCoord, view, projection, viewPort);
 
-		if(this->controller->wasClicked(GLFW_KEY_C))
+		std::cout << "ID: " << index << std::endl;
+
+		if(this->controller->wasClicked(GLFW_KEY_C) && index != 0)
 		{
 			Transformation* transform = new Transformation();
+			if (this->defTransform)
+				transform = this->defTransform;
+
 			transform->transforms.push_back(new Translate(worldPos));
-			transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
+			//transform->transforms.push_back(new Scale(glm::vec3(0.02f, 0.02f, 0.02f)));
 
 			DrawableObject* dObject;
 
@@ -271,12 +304,13 @@ void Scene::drawObjects()
 	}
 }
 
-void Scene::addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color, Texture* texture)
+void Scene::addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color,Transformation* transforms, Texture* texture)
 {
 	this->defShaderProgram = shaderProgram;
 	this->defModel = model;
 	this->defColor = color;
 	this->defTexture = texture;
+	this->defTransform = transforms;
 }
 
 void Scene::setFlashlight(Flashlight* flashlight)

@@ -9,6 +9,7 @@
 
 #include "DirectionLight.h"
 #include "SpotLight.h"
+#include "Flashlight.h"
 
 #include "Transformation.h"
 #include "Translate.h"

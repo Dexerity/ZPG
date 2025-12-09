@@ -178,12 +178,12 @@ void Application::createModels()
 	const float texPlain[] = {
 		//vrchol, normála, uv souřadnice
 		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-		1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+		1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   10.0f, 0.0f,
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   10.0f, 10.0f,
 
-	   -1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 1.0f,
+	   -1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
 		1.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
-	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f
+	   -1.0f, 0.0f,-1.0f,   0.0f, 1.0f, 0.0f,   10.0f, 10.0f
 	};
 
     //models.push_back(new Model(hexagon, sizeof(hexagon) / sizeof(float)));       // 0: hexagon
@@ -199,14 +199,18 @@ void Application::createModels()
 	//models.push_back(new Model("Cottage_obj.obj"));
 	models.push_back(new Model(texPlain, sizeof(texPlain) / sizeof(float) / 8, true));
 	models.push_back(new Model("teren.obj"));
-	models.push_back(new Model("teren.obj"));
+	models.push_back(new Model(sphere, sizeof(sphere) / sizeof(float) / 6, false));
 	models.push_back(new Model("formula1.obj"));
 	models.push_back(new Model("Lowpoly_tree_sample.obj"));
-	models.push_back(new Model("Lowpoly_tree_sample.obj"));
+	models.push_back(new Model("forrest.obj"));
 	//models.push_back(new Model("forrest.obj"));
-	//models.push_back(new Model("eyeball.obj"));
 	models.push_back(new Model("13913_Sun_v2_l3.obj"));
 	models.push_back(new Model("login.obj"));
+	models.push_back(new Model(tree, sizeof(tree) / sizeof(float) / 6, false));
+	models.push_back(new Model(bushes, sizeof(bushes) / sizeof(float) / 6, false));
+	models.push_back(new Model("shrek.obj"));
+	models.push_back(new Model("fiona.obj"));
+	models.push_back(new Model("eyeball.obj"));
 }
 
 void Application::createScenes()
@@ -247,13 +251,49 @@ void Application::createScenes()
 	dObjects[3]->addTransform(transform);
 
 	scenes[0]->addDrawableObjects(dObjects);*/
+
+	Camera* cam1 = new Camera();
+	std::vector<Light*> lights;
+	lights.push_back(new Light(glm::vec3(0.0f), glm::vec3(1.0f), 1));
+
+	scenes.push_back(new Scene(this->controller, cam1, lights));
+
+	std::vector<DrawableObject*> dObjects1;
+
+	dObjects1.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(1.0f)));
+	dObjects1.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(1.0f)));
+	dObjects1.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(1.0f)));
+	dObjects1.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(1.0f)));
+
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.5f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f)));
+	dObjects1[0]->addTransform(transform);
+	dObjects1[0]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 40.0f));
+
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(-0.5f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f)));
+	dObjects1[1]->addTransform(transform);
+
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.0f, 0.5f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f)));
+	dObjects1[2]->addTransform(transform);
+
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.0f, -0.5f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.1f)));
+	dObjects1[3]->addTransform(transform);
+
+	scenes[0]->addDrawableObjects(dObjects1);
 	
 	////-------------------------------
 
 	Camera* cam2 = new Camera();
 	std::vector<Light*> lights2;
-	lights2.push_back(new Light(glm::vec3(0.3f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
-	//lights2.push_back(new DirectionLight(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 5.0f, glm::vec3(0.0f, -1.0f, 0.0f)));
+	//lights2.push_back(new Light(glm::vec3(0.3f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f));
+	lights2.push_back(new DirectionLight(glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 10.0f, glm::vec3(0.0f, -1.0f, 0.0f)));
 	
 	std::vector<std::string> skySides = {
 	"Assets/Skybox/posx.jpg",
@@ -267,13 +307,16 @@ void Application::createScenes()
 
 	scenes.push_back(new Scene(this->controller, cam2, lights2, skybox1));
 
+	scenes[1]->addAObject(shaderPrograms[3], models[8], glm::vec3(0.0f, 1.0f, 0.0f));
+
 	std::vector<DrawableObject*> dObjects2;
 
 	dObjects2.push_back(new DrawableObject(models[0], shaderPrograms[3], glm::vec3(-1.0f, -1.0f, -1.0f), new Texture("Assets/racetrack.jpg")));
 
 	dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(1.0f)));
 	dObjects2[1]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 1.0f));
-	//dObjects2.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
+	
+	dObjects2.push_back(new DrawableObject(models[1], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
 
 	glm::mat4 customMat = glm::mat4(1.0f);
 	customMat[3][3] = 20.0f;
@@ -289,12 +332,17 @@ void Application::createScenes()
 	transform->transforms.push_back(new Scale(glm::vec3(0.01f, 0.01f, 0.01f)));
 	dObjects2[1]->addTransform(transform);
 
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.0f, -0.01f, 0.0f)));
+	//transform->transforms.push_back(new Scale(glm::vec3(2.0f, 2.0f, 2.0f)));
+	dObjects2[2]->addTransform(transform);
+
 	/*transform = new Transformation();
 	transform->transforms.push_back(new Translate(glm::vec3(0.5f, 0.0f, 0.0f)));
 	transform->transforms.push_back(new Scale(glm::vec3(0.04f, 0.04f, 0.04f)));
 	dObjects2[2]->addTransform(transform);*/
 
-	scenes[0]->addDrawableObjects(dObjects2);
+	scenes[1]->addDrawableObjects(dObjects2);
 
 	////-------------------------------
 
@@ -304,18 +352,21 @@ void Application::createScenes()
 
 	scenes.push_back(new Scene(this->controller, cam3, lights3, skybox1, 1));
 
-	scenes[1]->addAObject(shaderPrograms[2], models[5], glm::vec3(-1.f), new Texture("Assets/Eye_D.jpg"));
+
+	scenes[2]->setFlashlight(new Flashlight(glm::vec3(1.0f), 3));
+
+	scenes[2]->addAObject(shaderPrograms[2], models[12], glm::vec3(-1.f), nullptr, new Texture("Assets/Eye_D.jpg"));
 
 	std::vector<DrawableObject*> dObjects3;
 
-	dObjects3.push_back(new DrawableObject(models[2], shaderPrograms[2], glm::vec3(-1.f), new Texture("Assets/grass.png")));
+	dObjects3.push_back(new DrawableObject(models[1], shaderPrograms[2], glm::vec3(-1.f), new Texture("Assets/grass.png")));
 	dObjects2[0]->addMaterial(new Material(0.1f, 1.0f, 1.0f, 1.0f));
 
 
 	for (int i = 0; i < 16; i++)
 	{
 		transform = new Transformation();
-		dObjects3.push_back(new DrawableObject(models[4], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
+		dObjects3.push_back(new DrawableObject(models[5], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
 		dObjects3[i + 1]->addMaterial(new Material(0.1f, 0.9f, 0.05f, 1.0f));
 
 		//1,25
@@ -333,7 +384,7 @@ void Application::createScenes()
 	dObjects3.push_back(new DrawableObject(models[4], shaderPrograms[2], glm::vec3(0.0f, 1.0f, 0.0f)));
 	dObjects3[1]->addTransform(transform);*/
 
-	scenes[1]->addDrawableObjects(dObjects3);
+	scenes[2]->addDrawableObjects(dObjects3);
 
 	////-------------------------------
 
@@ -345,12 +396,12 @@ void Application::createScenes()
 	lights4[0]->k_q = 0.000001f;
 
 	std::vector<std::string> skySides2 = {
-		"Assets/SkyboxSpace/sky.jpg",
-		"Assets/SkyboxSpace/sky.jpg",
-		"Assets/SkyboxSpace/sky.jpg",
-		"Assets/SkyboxSpace/sky.jpg",
-		"Assets/SkyboxSpace/sky.jpg",
-		"Assets/SkyboxSpace/sky.jpg"
+		"Assets/SkyboxSpace/sky2.jpg",
+		"Assets/SkyboxSpace/sky2.jpg",
+		"Assets/SkyboxSpace/sky2.jpg",
+		"Assets/SkyboxSpace/sky2.jpg",
+		"Assets/SkyboxSpace/sky2.jpg",
+		"Assets/SkyboxSpace/sky2.jpg"
 	};
 	Skybox* skybox2 = new Skybox(skySides2);
 
@@ -482,10 +533,20 @@ void Application::createScenes()
 	dObjects4[9]->addTransform(transform);
 
 
-	scenes[2]->addDrawableObjects(dObjects4);
+	scenes[3]->addDrawableObjects(dObjects4);
 
+	//----------------------------------------------------
+	Camera* cam5 = new Camera();
+	std::vector<Light*> lights5;
+	lights5.push_back(new DirectionLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5, glm::vec3(0.0f, -1.0f, 0.0f)));
 
-
+	/*for (int i = 0; i < 5; i++)
+	{
+		lights5.push_back(new Light(glm::vec3((rand() % 50 - 50) / 10.0, 0.2f, (rand() % 50 - 50) / 10.0), glm::vec3(1.0f, 1.0f, 0.0f), 1.0f));
+		transform = new Transformation();
+		transform->transforms.push_back(new RandomTranslate(glm::vec3(3.0f, 0.0f, 3.0f), 60));
+		lights5[i]->setTransformation(transform);
+	}*/
 
 	//Camera* cam4 = new Camera();
 	//std::vector<Light*> lights4;
@@ -493,71 +554,59 @@ void Application::createScenes()
 	//lights4.push_back(new Light(glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f));
 	//lights4.push_back(new Light(glm::vec3(0.3f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
 
+	Skybox* skybox3 = new Skybox(skySides2);
 
-	//scenes.push_back(new Scene(this->controller, cam4, lights4));
+	scenes.push_back(new Scene(this->controller, cam5, lights5, skybox3));
 
-	//std::vector<DrawableObject*> dObjects4;
+	scenes[4]->setFlashlight(new Flashlight(glm::vec3(1.0f), 4));
 
-	//dObjects4.push_back(new DrawableObject(models[3], shaderPrograms[3], glm::vec3(1.0f, 1.0f, 1.0f)));
+	std::vector<DrawableObject*> dObjects5;
 
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
-	//dObjects4[0]->addTransform(transform);
+	dObjects5.push_back(new DrawableObject(models[0], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/grass.png")));
 
-	//scenes[3]->addDrawableObjects(dObjects4);
-	
-	
-	
-	////Scene 5
-	//Camera* cam5 = new Camera();
-	//std::vector<Light*> lights5;
+	transform = new Transformation();
+	transform->transforms.push_back(new Scale(glm::vec3(20.0f, 1.0f, 20.0f)));
+	dObjects5[0]->addTransform(transform);
 
 
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	lights5.push_back(new Light(glm::vec3((rand() % 50 - 50) / 10.0, 0.2f, (rand() % 50 - 50) / 10.0), glm::vec3(1.0f, 1.0f, 0.0f), 1.0f));
-	//	transform = new Transformation();
-	//	transform->transforms.push_back(new RandomTranslate(glm::vec3(3.0f, 0.0f, 3.0f), 60));
-	//	lights5[i]->setTransformation(transform);
-	//}
-	//
-	//
-	//
-	//
+	for (int i = 0; i < 256; i++)
+	{
+		transform = new Transformation();
+		transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
+		transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
+		transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
+		if ((i / 16 + i % 16) % 2 == 0)
+		{
+			dObjects5.push_back(new DrawableObject(models[4], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
+			transform->transforms.push_back(new Scale(glm::vec3(0.1f, 0.1f, 0.1f)));
+		}
+		else
+		{
+			dObjects5.push_back(new DrawableObject(models[9], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
+		}
 
-	//scenes.push_back(new Scene(this->controller, cam5, lights5));
+		//1,25
 
-	//std::vector<DrawableObject*> dObjects5;
+		
+		
+		dObjects5[i + 1]->addTransform(transform);
+	}
 
-	//dObjects5.push_back(new DrawableObject(models[5], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-	//transform = new Transformation();
-	//transform->transforms.push_back(new Scale(glm::vec3(10.0f, 0.0f, 10.0f)));
-	//dObjects5[0]->addTransform(transform);
+	dObjects5.push_back(new DrawableObject(models[10], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/shrek.png")));
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(0.2f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.2f, 0.2f, 0.2f)));
+	dObjects5[257]->addTransform(transform);
 
-	//for (int i = 0; i < 256; i++)
-	//{
-	//	transform = new Transformation();
-	//	if ((i / 16 + i % 16) % 2 == 0)
-	//	{
-	//		dObjects5.push_back(new DrawableObject(models[4], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-	//	}
-	//	else
-	//	{
-	//		dObjects5.push_back(new DrawableObject(models[7], shaderPrograms[3], glm::vec3(0.0f, 1.0f, 0.0f)));
-	//	}
+	dObjects5.push_back(new DrawableObject(models[11], shaderPrograms[3], glm::vec3(-1.0f), new Texture("Assets/fiona.png")));
+	transform = new Transformation();
+	transform->transforms.push_back(new Translate(glm::vec3(-0.2f, 0.0f, 0.0f)));
+	transform->transforms.push_back(new Scale(glm::vec3(0.2f, 0.2f, 0.2f)));
+	dObjects5[258]->addTransform(transform);
 
-	//	//1,25
+	scenes[4]->addDrawableObjects(dObjects5);
 
-	//	transform->transforms.push_back(new Translate(glm::vec3(-10.0f, 0.0f, 10.0f)));
-	//	transform->transforms.push_back(new Translate(glm::vec3((i % 16) * 1.5f, 0.0f, (i / 16) * -1.5f)));
-	//	transform->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), rand() % 360));
-	//	transform->transforms.push_back(new Scale(glm::vec3(0.4f, 0.4f, 0.4f)));
-	//	dObjects5[i + 1]->addTransform(transform);
-	//}
-
-
-	//scenes[2]->addDrawableObjects(dObjects5);
-
+	printf("scenes created\n");
 }
 
 

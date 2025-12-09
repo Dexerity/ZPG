@@ -21,8 +21,9 @@ public:
 	~Scene();
 	void addDrawableObjects(std::vector<DrawableObject*> dObjects);
 	void drawObjects();
-	void addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color, Texture* texture = nullptr);
+	void addAObject(ShaderProgram* shaderProgram, Model* model, glm::vec3 color, Transformation* transforms = nullptr, Texture* texture = nullptr);
 	void setFlashlight(Flashlight* flashlight);
+	void reIndex();
 private:
 	int sceneState = 0;
 	int score = 0;
@@ -35,6 +36,7 @@ private:
 	Model* defModel;
 	glm::vec3 defColor;
 	Texture* defTexture;
+	Transformation* defTransform;
 	double mouseX = 0;
 	double mouseY = 0;
 	double scrollY = 0;

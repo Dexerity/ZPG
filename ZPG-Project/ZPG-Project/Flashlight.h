@@ -1,8 +1,8 @@
 #pragma once
 
-#include "DirectionLight.h"
+#include "SpotLight.h"
 
-class Flashlight : public DirectionLight
+class Flashlight : public SpotLight
 {
 public:
 	Flashlight(glm::vec3 color, float intensity);
@@ -12,11 +12,16 @@ public:
 	glm::vec3 getDirection() { return direction; }
 	glm::vec3 getPosition() { return position; }
 	float getIntensity() { return intensity; }
+	float getAlpha();
+	int getType();
+	bool isActive = true;
 
 private:
+	float alpha;
 	glm::vec3 color;
 	float intensity;
 	glm::vec3 direction;
-	int lightType = 1;
+	int lightType = 2;
+	
 };
 
