@@ -1,10 +1,11 @@
 #include "Light.h"
 
-Light::Light(glm::vec3 position, glm::vec3 color, float intensity)
+Light::Light(glm::vec3 position, glm::vec3 color, float intensity) : ALight(position, glm::vec3(0.0f), color, intensity, 0, 0)
 {
 	this->position = position;
 	this->color = color;
 	this->intensity = intensity;
+	this->lightType = 0;
 }
 
 Light::~Light()

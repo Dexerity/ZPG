@@ -69,11 +69,11 @@ vec3 calculateSpotLight(Light light, vec3 norm, vec3 viewDir, vec3 lightVector, 
     
     float lightAtt = 1.0 / (light.k_c + light.k_l * d + light.k_q * d * d);
     
-    float dotLF = dot(normalize(-lightVector), normalize(light.direction));
+    float lightAngle = dot(normalize(-lightVector), normalize(light.direction));
     float spotIntensity = 0.0;
 
-    if (dotLF > light.alpha) {
-        spotIntensity = clamp((dotLF - light.alpha) / (1.0 - light.alpha), 0.0, 1.0);
+    if (lightAngle > light.alpha) {
+        spotIntensity = clamp((lightAngle - light.alpha) / (1.0 - light.alpha), 0.0, 1.0);
     }
     
     return calculateLighting(norm, viewDir, lightDir, light.color, light.intensity, lightAtt) * spotIntensity;

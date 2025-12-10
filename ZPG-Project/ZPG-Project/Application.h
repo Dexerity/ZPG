@@ -7,9 +7,11 @@
 #include "Scene.h"
 #include "Controller.h"
 
+#include "Alight.h"
 #include "DirectionLight.h"
 #include "SpotLight.h"
 #include "Flashlight.h"
+#include "Light.h"
 
 #include "Transformation.h"
 #include "Translate.h"

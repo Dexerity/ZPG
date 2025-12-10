@@ -17,7 +17,7 @@
 class Scene
 {
 public:
-	Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox = nullptr, int sceneState = 0);
+	Scene(Controller* controller, Camera* camera, std::vector<ALight*> lights, Skybox* skybox = nullptr, int sceneState = 0);
 	~Scene();
 	void addDrawableObjects(std::vector<DrawableObject*> dObjects);
 	void drawObjects();
@@ -29,7 +29,7 @@ private:
 	int score = 0;
 	std::vector<DrawableObject*> dObjects;
 	Camera* camera;
-	std::vector<Light*> lights;
+	std::vector<ALight*> lights;
 	Controller* controller;
 	Skybox* skybox;
 	ShaderProgram* defShaderProgram;

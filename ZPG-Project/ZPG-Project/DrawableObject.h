@@ -4,7 +4,7 @@
 #include "ShaderProgram.h"
 #include "Transformation.h"
 #include "Camera.h"
-#include "Light.h"
+#include "ALight.h"
 #include "Texture.h"
 #include "Material.h"
 #include "Flashlight.h"
@@ -17,7 +17,7 @@ class DrawableObject : public Observer
 public:
 	DrawableObject(Model* model, ShaderProgram* shaderProgram, glm::vec3 color, Texture* texture = nullptr);
 	~DrawableObject();
-	void addSubjects(Camera* camera, std::vector<Light*> lights);
+	void addSubjects(Camera* camera, std::vector<ALight*> lights);
 	void addTransform(Transformation* transform);
 	void DrawObject();
 	void Notify(enum SubjectType type) override;
@@ -33,7 +33,7 @@ public:
 private:
 	int ID = 0;
 	Camera* camera = nullptr;
-	std::vector<Light*> lights;
+	std::vector<ALight*> lights;
 	Model* model = nullptr;
 	ShaderProgram* shaderProgram = nullptr;
 	Transformation* transformation;

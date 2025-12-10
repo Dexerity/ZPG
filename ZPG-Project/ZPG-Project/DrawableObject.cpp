@@ -155,21 +155,21 @@ DrawableObject::~DrawableObject()
 	if(this->camera)
 		this->camera->detachObserver(this);
 
-	for (Light* light : lights)
+	for (ALight* light : lights)
 	{
 		if(light)
 			light->detachObserver(this);
 	}
 }
 
-void DrawableObject::addSubjects(Camera* camera, std::vector<Light*> lights)
+void DrawableObject::addSubjects(Camera* camera, std::vector<ALight*> lights)
 {
 	this->camera = camera;
 	this->lights = lights;
 
 	this->camera->attachObserver(this);
 
-	for(Light* light : lights)
+	for(ALight* light : lights)
 	{
 		light->attachObserver(this);
 	}

@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <string>
 
-Scene::Scene(Controller* controller, Camera* camera, std::vector<Light*> lights, Skybox* skybox, int sceneState)
+Scene::Scene(Controller* controller, Camera* camera, std::vector<ALight*> lights, Skybox* skybox, int sceneState)
 {
 	this->sceneState = sceneState;
 	this->camera = camera;
@@ -24,7 +24,7 @@ Scene::~Scene()
 		}
 	}
 
-	for (Light* light : lights)
+	for (ALight* light : lights)
 	{
 		if (light)
 		{
@@ -99,7 +99,7 @@ void Scene::drawObjects()
 		skybox->draw(camera->getCamera(), camera->getProjectionMatrix());
 
 
-	for (Light* light : lights)
+	for (ALight* light : lights)
 	{
 		light->updateLight();
 	}
@@ -249,7 +249,7 @@ void Scene::drawObjects()
 			
 			bezTrans->transforms.push_back(bezierSpline);
 			bezTrans->transforms.push_back(new Rotate(glm::vec3(0.0f, 1.0f, 0.0f), 90));
-			bezTrans->transforms.push_back(new Scale(glm::vec3(0.01f, 0.01f, 0.01f)));
+			bezTrans->transforms.push_back(new Scale(glm::vec3(0.05f, 0.05f, 0.05f)));
 
 			dObjects[1]->addTransform(bezTrans);
 		}

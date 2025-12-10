@@ -5,7 +5,7 @@
 
 Camera::Camera()
 {
-	this->projectionMatrix = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+	this->projectionMatrix = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
 	this->cameraPosition = glm::vec3(0.0f, 0.2f, 0.9f);
 	this->cameraAngle = glm::vec3(0.0f, 0.0f, -1.0f);
 }
@@ -35,7 +35,7 @@ void Camera::updateProjectionMatrix(int width, int height, double scrollOff)
 	if (this->FOV < 45.f)
 		this->FOV = 45.f;
 
-	this->projectionMatrix = glm::perspective(glm::radians(this->FOV), (float)width / (float)height, 0.1f, 500.0f);
+	this->projectionMatrix = glm::perspective(glm::radians(this->FOV), (float)width / (float)height, 0.1f, 1000.0f);
 	this->notifyObservers(SubjectType::CAMERA);
 }
 
